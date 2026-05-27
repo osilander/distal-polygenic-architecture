@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# R
+.Rapp.history
+.Rhistory
+.RData
+
+# Large data/output directories — not versioned
+data/
+figures/
+results/
