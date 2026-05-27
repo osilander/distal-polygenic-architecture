@@ -78,8 +78,8 @@ Also writes `results/all-trait-25k-mean-effects-snp20.tsv` (SNP≥20 filter).
 ---
 ### Step 3 — GWAS-removed distance analyses (needed by Figures 3, S13, S18–S23)
 ```r
-Rscript post-process-scripts/compute-gwas-removed-distances.R 100   # ~45 min
-Rscript post-process-scripts/compute-gwas-removed-distances.R 150   # ~45 min
+Rscript post-process-scripts/compute-gwas-removed-distances.R 100
+Rscript post-process-scripts/compute-gwas-removed-distances.R 150
 Rscript post-process-scripts/compute-gwas-removed-cdf-ribbon.R
 ```
 
@@ -89,10 +89,10 @@ These are HPC-generated. Copy from the source repo rather than re-running locall
 If re-running is needed:
 ```bash
 # Part A: SVD nulls (trait_flip, entry_flip, withinblock_perm — 100 iters each)
-Rscript post-process-scripts/generate-svd-nulls-50k.R 100   # ~3–4 hr on laptop
+Rscript post-process-scripts/generate-svd-nulls-50k.R 100
 # Part B: Chunked within-permutation nulls
-Rscript post-process-scripts/prepare-chunk-withinperm-base-50k.R   # ~1 min
-Rscript post-process-scripts/analyse-chunk-withinperm-nulls-50k.R 100   # ~2–3 hr on laptop
+Rscript post-process-scripts/prepare-chunk-withinperm-base-50k.R
+Rscript post-process-scripts/analyse-chunk-withinperm-nulls-50k.R 100
 ```
 **Outputs:** `results/svd-nulls-50k/`, `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz`
 
@@ -109,8 +109,8 @@ Rscript post-process-scripts/compute-figure2-cache.R
 These are HPC-generated. Copy from the source repo rather than re-running locally.
 If re-running is needed:
 ```bash
-Rscript post-process-scripts/run-allbyall-cosine-matrices.R           # ~15 min
-Rscript post-process-scripts/run-entrysign-perm-procrustes-normalized.R   # ~60–90 min on laptop
+Rscript post-process-scripts/run-allbyall-cosine-matrices.R
+Rscript post-process-scripts/run-entrysign-perm-procrustes-normalized.R
 ```
 **Outputs:** `results/allbyall_cosine_matrices/`
 **Requires:** Steps 0, 2, 3, 4 complete; FigureS8 and FigureS9 complete.
@@ -250,8 +250,8 @@ Rscript post-process-scripts/run-figureS14.R
 ---
 ### FigureS16 + FigureS24 — Nearest-peak and nearest-gene pattern comparison (50k vs 100k)
 ```r
-Rscript post-process-scripts/compute-nearestgene-pattern-bands.R 50k    # ~60-90 min
-Rscript post-process-scripts/compute-nearestgene-pattern-bands.R 100k   # ~60-90 min
+Rscript post-process-scripts/compute-nearestgene-pattern-bands.R 50k
+Rscript post-process-scripts/compute-nearestgene-pattern-bands.R 100k
 Rscript post-process-scripts/run-figureS16-and-S24.R
 ```
 **Outputs:** `figures/figureS16_observed_nearestgwaspeak_pattern_summary_50k_100k_comparison.pdf`,
@@ -326,9 +326,9 @@ Rscript post-process-scripts/run-figureS23.R
 ### Figure 4 — Nearest-gene enrichment panels
 Run upstream scripts first, then assemble the figure:
 ```r
-Rscript post-process-scripts/compute-nearestgene-patterns.R gene 10000   # ~3-4 hr
-Rscript post-process-scripts/compute-genicclass-enrichment.R              # ~5-10 min
-Rscript post-process-scripts/run-figureS-nearestgene-cdf-top1pct.R        # ~2-3 hr
+Rscript post-process-scripts/compute-nearestgene-patterns.R gene 10000
+Rscript post-process-scripts/compute-genicclass-enrichment.R
+Rscript post-process-scripts/run-figureS-nearestgene-cdf-top1pct.R
 Rscript post-process-scripts/run-figure4.R
 ```
 **Outputs:** `figures/figure4.pdf`
