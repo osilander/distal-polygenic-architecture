@@ -4,7 +4,7 @@
 # Pre-computed inputs:
 #   results/pca_loadings_50k.tsv
 #   data/gencode.v19.genes.protein_coding.rds
-# Run: Rscript post-process-scripts/compute-full-gene-enrichment.R
+# Run: Rscript figure-scripts/compute-full-gene-enrichment.R
 # Requires: clusterProfiler, org.Hs.eg.db, msigdbr  (all local, no internet needed)
 # Databases: GO (BP, MF, CC), MSigDB Hallmarks, MSigDB C2 (curated pathways)
 # Parallel to compute-gwas-removed-gene-enrichment.R but uses the full (unfiltered) PCA loadings.
@@ -34,7 +34,7 @@ out_enrich   <- file.path(out_dir, "enrichment_results.tsv")
 
 loadings_file <- file.path("results", "pca_loadings_50k.tsv")
 if (!file.exists(loadings_file))
-  stop("Missing: ", loadings_file, "\nRun: Rscript post-process-scripts/run-figure1.R first.")
+  stop("Missing: ", loadings_file, "\nRun: Rscript figure-scripts/run-figure1.R first.")
 genes_rds <- file.path(project_root, "data", "gencode.v19.genes.protein_coding.rds")
 if (!file.exists(genes_rds)) stop("Missing genes RDS: ", genes_rds)
 

@@ -6,7 +6,7 @@
 #   results/genicclass_rank_enrichment_50k/cumulative_genicclass_enrichment_curves_pc1_pc4.tsv
 #   results/nearestgene_nonzero_distance_cdf_ribbon_50k_top1pct.tsv
 #   results/nearestgene_nonzero_distance_cdf_ribbon_50k_top1pct_pvalues.tsv
-# Run: Rscript post-process-scripts/run-figure4.R
+# Run: Rscript figure-scripts/run-figure4.R
 
 suppressPackageStartupMessages({
   library(data.table)

@@ -8,7 +8,7 @@
 #         results/withinperm_peaks_summary.tsv
 # Output: figures/figureS14_withinperm_peaks_pc1_4.pdf
 #
-# Run from project root: Rscript post-process-scripts/run-figureS14.R
+# Run from project root: Rscript figure-scripts/run-figureS14.R
 
 suppressPackageStartupMessages({
   library(data.table)

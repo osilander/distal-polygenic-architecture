@@ -244,7 +244,7 @@ plot_pc_loadings <- function(pca_loadings, pc = "PC1", pdf_file = NULL,
 }
 
 filter_effect_matrix <- function(eff, pvals, p_thresh = NULL) {
-  helper_path <- file.path("post-process-scripts", "helpers-50k-matrix.R")
+  helper_path <- file.path("figure-scripts", "helpers-50k-matrix.R")
   helper_env  <- new.env(parent = parent.frame())
   sys.source(helper_path, envir = helper_env)
   helper_env$filter_effect_matrix(eff = eff, pvals = pvals, p_thresh = p_thresh)

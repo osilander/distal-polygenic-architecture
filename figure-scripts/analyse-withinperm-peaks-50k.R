@@ -15,7 +15,7 @@
 #   results/withinperm_peaks_iter_metrics.tsv      -- per-iteration metrics
 #   results/withinperm_peaks_summary.tsv           -- observed vs null summary
 #
-# Run from project root: Rscript post-process-scripts/analyse-withinperm-peaks-50k.R
+# Run from project root: Rscript figure-scripts/analyse-withinperm-peaks-50k.R
 
 suppressPackageStartupMessages(library(data.table))
 

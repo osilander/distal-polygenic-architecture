@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # Produces: figures/figureS17_chr9_chr17_pval_scatter.pdf
 # Pre-computed inputs: results/all-trait-50k-mean-pvals.tsv
-# Run: Rscript post-process-scripts/run-figureS17.R
+# Run: Rscript figure-scripts/run-figureS17.R
 # Shows per-trait -log10(p) across a 1 Mb window centered on:
 #   Chr9  ~16.65-17.65 Mb (top-loaded PC1 locus)
 #   Chr17 ~20.9-21.9 Mb  (top-loaded PC1 locus)

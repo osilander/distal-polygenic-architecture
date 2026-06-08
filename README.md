@@ -1,7 +1,7 @@
 # distal-polygenic-architecture
 Post-processing pipeline for all figures in the distal polygenic architecture manuscript.
 Scripts are run from the project root (`distal-polygenic-architecture/`).
-> **Repo intent:** code and figures release. `figures/` (PDF outputs) are tracked. `data/` and `results/` are not tracked in git. Pre-computed HPC outputs and reference files are distributed via Zenodo (see below); `data/windows_filtered/` (large, per-trait GWAS window summaries) must be generated via HPC.
+> **Repo intent:** code release. `figures/`, `data/`, and `results/` are not tracked in git. Pre-computed HPC outputs and reference files are distributed via Zenodo (see below); `data/windows_filtered/` (large, per-trait GWAS window summaries) must be generated via HPC.
 
 ---
 ## Quick build-status check
@@ -17,7 +17,6 @@ Verifies data symlink, HPC inputs, intermediate results, and reports what can an
 | **Fully local** | All figure scripts (run-figure\*.R, run-figureS\*.R) and downstream summaries | Zenodo data downloaded and symlinked into `results/` (see Setup below) |
 | **Local if windows available** | Step 0 matrix build; FigureS1, FigureS8, FigureS11 | `data/windows_filtered/` (generate via `slurms/build-windows.slurm`) |
 | **Blocked — HPC required** | Figure 1 scree panel | `chunk_withinperm_scree_runs_50k.tsv.gz` (generate via `slurms/chunk-withinperm-*.slurm`) |
-The machine-readable dependency graph is in `manifest.tsv` (columns: output, generator, key\_inputs, tier, used\_by).
 
 ---
 ## Directory structure
@@ -37,7 +36,7 @@ distal-polygenic-architecture/
     trait_abbrevs_categorised.txt   → Zenodo: reference-data.tar.gz
     windows_filtered/                → HPC only (not on Zenodo): slurms/build-windows.slurm
   results/                           → generated outputs (not in git)
-  figures/                           → figure PDFs
+  figures/                           → figure PDFs (generated; not in git)
   figure-scripts/                    → R scripts
   slurms/                            → HPC SLURM scripts
     build-windows.slurm                Array job: per-trait window summaries → data/windows_filtered/

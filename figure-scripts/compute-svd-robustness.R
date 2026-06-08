@@ -11,7 +11,7 @@
 # If an intermediate file already exists it is loaded and that analysis is skipped.
 # Delete individual files to force re-run of specific analyses.
 #
-# Run: Rscript post-process-scripts/compute-svd-robustness.R
+# Run: Rscript figure-scripts/compute-svd-robustness.R
 # Runtime: ~60-90 min at n_perm=100, n_perm_null=30
 
 suppressPackageStartupMessages({
@@ -21,7 +21,7 @@ suppressPackageStartupMessages({
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
 setwd(project_root)
-source(file.path("post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path("figure-scripts", "helpers-50k-matrix.R"))
 
 # ---- Parameters ----
 set.seed(20260519)
@@ -266,7 +266,7 @@ if (file.exists(f_cos_gd) && file.exists(f_proc_gd)) {
   proc_gd_dt   <- fread(f_proc_gd)
 } else if (!file.exists(removed_file)) {
   message("\nAnalysis 4b: Skipping — removed_windows file not found.")
-  message("  Run: Rscript post-process-scripts/compute-gwas-removed-distances.R 100")
+  message("  Run: Rscript figure-scripts/compute-gwas-removed-distances.R 100")
   cosine_gd_dt <- data.table()
   proc_gd_dt   <- data.table()
 } else {

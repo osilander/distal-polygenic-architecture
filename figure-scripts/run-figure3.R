@@ -5,7 +5,7 @@
 #   results/all-trait-50k-mean-pvals.tsv, data/gencode.v19.genes.protein_coding.rds,
 #   results/gwas_removed_distance_cdf_ribbon_50kb_bins.tsv,
 #   results/gwas_removed_distance_cdf_ribbon_50kb_bins_pvalues.tsv
-# Run: Rscript post-process-scripts/run-figure3.R [flank_kb]
+# Run: Rscript figure-scripts/run-figure3.R [flank_kb]
 #   default flank_kb = 100
 
 suppressPackageStartupMessages({
@@ -63,12 +63,12 @@ pca_loadings_file <- file.path("results", "pca_loadings_50k.tsv")
 if (!file.exists(pca_loadings_file)) stop("Missing: ", pca_loadings_file, "\nRun run-figure1.R first.")
 pca_loadings <- fread(pca_loadings_file)
 
-source(file.path("post-process-scripts", "helpers-plotting.R"))
+source(file.path("figure-scripts", "helpers-plotting.R"))
 chrom_plot_palette <- colorRampPalette(brewer.pal(8, "Set1"))(22)
 
 # ---- Rebuild traits_t_scaled ----
 message("Figure 3: rebuilding scaled trait matrix (~2-3 min)...")
-source(file.path("post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path("figure-scripts", "helpers-50k-matrix.R"))
 all_betas <- fread(file.path("results", "all-trait-50k-mean-effects.tsv"))
 all_pvals <- fread(file.path("results", "all-trait-50k-mean-pvals.tsv"))
 prep <- prepare_X_50k(all_betas, all_pvals)

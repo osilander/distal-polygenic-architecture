@@ -7,7 +7,7 @@
 # Pre-computed inputs: results/pca_loadings_50k.tsv,
 #                      data/gencode.v19.genes.protein_coding.rds,
 #                      results/all-trait-50k-mean-pvals.tsv (for gwas target only)
-# Run: Rscript post-process-scripts/compute-nearestgene-patterns.R [gene|gwas|all] [n_reps]
+# Run: Rscript figure-scripts/compute-nearestgene-patterns.R [gene|gwas|all] [n_reps]
 #   default: gene 1000
 
 suppressPackageStartupMessages({

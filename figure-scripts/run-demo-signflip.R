@@ -11,8 +11,8 @@ suppressPackageStartupMessages({
 })
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
-source(file.path(project_root, "post-process-scripts", "helpers-50k-matrix.R"))
-source(file.path(project_root, "post-process-scripts", "helpers-trait-labels.R"))
+source(file.path(project_root, "figure-scripts", "helpers-50k-matrix.R"))
+source(file.path(project_root, "figure-scripts", "helpers-trait-labels.R"))
 
 # ── Category colour palette (identical to run-figure1.R) ─────────────────────
 cat_dt <- fread("results/umap-coordinates.tsv",

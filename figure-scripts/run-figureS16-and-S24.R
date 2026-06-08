@@ -4,7 +4,7 @@
 # Pre-computed inputs:
 #   results/observed-nearest-patterns-50k-top1_2_5_band45_50/
 #   results/observed-nearest-patterns-100k-top1_2_5_band45_50/
-# Run: Rscript post-process-scripts/run-figureS16-and-S24.R
+# Run: Rscript figure-scripts/run-figureS16-and-S24.R
 # Note: uses patchwork so each window-size row (50k, 100k) has its own independent axes.
 
 suppressPackageStartupMessages({

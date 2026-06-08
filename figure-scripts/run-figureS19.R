@@ -3,7 +3,7 @@
 #           results/gwas_removed_pc_correlations_pc1_pc4.tsv
 # Pre-computed inputs: results/pca_loadings_50k.tsv,
 #                      results/gwas_removed_distance_topload_50k_plus100kb/reduced_pca_window_loadings.tsv
-# Run: Rscript post-process-scripts/run-figureS19.R
+# Run: Rscript figure-scripts/run-figureS19.R
 
 suppressPackageStartupMessages({
   library(data.table)

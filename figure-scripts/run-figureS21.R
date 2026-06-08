@@ -9,7 +9,7 @@
 # Output: figures/figureS21_gwasremoved_withinperm_peaks_pc1_4.pdf
 #
 # Run from project root:
-#   Rscript post-process-scripts/run-figureS21.R
+#   Rscript figure-scripts/run-figureS21.R
 
 suppressPackageStartupMessages({
   library(data.table)

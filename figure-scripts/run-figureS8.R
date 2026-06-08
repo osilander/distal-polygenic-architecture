@@ -4,7 +4,7 @@
 #                                            scree_fullspectrum,window_coordinates,
 #                                            heatmap_matrix_top60}.tsv
 # Pre-computed inputs: data/windows_filtered/*_w50000.summary.tsv, data/trait_abbrevs_categorised.txt
-# Run: Rscript post-process-scripts/run-figureS8.R
+# Run: Rscript figure-scripts/run-figureS8.R
 
 suppressPackageStartupMessages({
   library(data.table)

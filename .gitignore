@@ -10,3 +10,11 @@
 data/
 figures/
 results/
+
+# Tarballs for Zenodo upload
+*.tar.gz
+
+# Working/manuscript files not part of code release
+distal-effects.pdf
+supp-table-1.txt
+codex-issues.md

@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # check-build-status.R
 # Verifies the repo environment and reports what can and cannot be built.
-# Run from the project root: Rscript post-process-scripts/check-build-status.R
+# Run from the project root: Rscript figure-scripts/check-build-status.R
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
 

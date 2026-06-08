@@ -13,8 +13,8 @@
 #   100k: results/pca_multiscale_anchored/pca_windows_100k_anchored.tsv †,
 #          results/all-trait-100k-mean-pvals.tsv †
 #   data/gencode.v19.genes.protein_coding.rds (via data/ symlink)
-# Run: Rscript post-process-scripts/compute-nearestgene-pattern-bands.R 50k
-#      Rscript post-process-scripts/compute-nearestgene-pattern-bands.R 100k
+# Run: Rscript figure-scripts/compute-nearestgene-pattern-bands.R 50k
+#      Rscript figure-scripts/compute-nearestgene-pattern-bands.R 100k
 # Runtime: ~60-90 min (3000 null reps × 4 PCs × 4 bands × 2 analyses)
 
 suppressPackageStartupMessages({
@@ -359,7 +359,7 @@ if (window_tag == "50k") {
     "reduced_pca_window_loadings.tsv")
   if (!file.exists(reduced_file))
     stop("Missing: ", reduced_file,
-         "\nRun: Rscript post-process-scripts/compute-gwas-removed-distances.R ", flank_kb)
+         "\nRun: Rscript figure-scripts/compute-gwas-removed-distances.R ", flank_kb)
   ld <- fread(reduced_file)
   if (!all(c("chrom", "start", "end") %in% names(ld))) {
     ld[, c("chrom", "start", "end") := tstrsplit(window_id, "_", fixed = TRUE)]

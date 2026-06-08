@@ -10,12 +10,12 @@
 #   results/gwasremoved_withinperm_peaks_summary.tsv
 #
 # Run from project root:
-#   Rscript post-process-scripts/compute-gwasremoved-withinperm-peaks.R [n_perm]
+#   Rscript figure-scripts/compute-gwasremoved-withinperm-peaks.R [n_perm]
 
 suppressPackageStartupMessages(library(data.table))
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
-source(file.path(project_root, "post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path(project_root, "figure-scripts", "helpers-50k-matrix.R"))
 
 args   <- commandArgs(trailingOnly = TRUE)
 n_perm <- if (length(args) >= 1L) as.integer(args[[1L]]) else 100L

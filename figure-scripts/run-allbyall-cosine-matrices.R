@@ -9,7 +9,7 @@
 #   results/gwas_removed_distance_topload_50k_plus{100,150}kb/reduced_pca_trait_scores.tsv
 #   results/figureS_pca_absolute_50k_trait_scores.tsv
 #   results/pca_abs50k_from_windows/trait_scores.tsv
-# Run: Rscript post-process-scripts/run-allbyall-cosine-matrices.R
+# Run: Rscript figure-scripts/run-allbyall-cosine-matrices.R
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -18,7 +18,7 @@ suppressPackageStartupMessages({
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
 setwd(project_root)
-source(file.path("post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path("figure-scripts", "helpers-50k-matrix.R"))
 
 out_dir <- file.path("results", "allbyall_cosine_matrices")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)

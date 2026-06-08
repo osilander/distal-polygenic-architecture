@@ -2,7 +2,7 @@
 # Produces: figures/figureS7_full_enrichment_dotplot_nearest_gene_top2pct.pdf
 # Pre-computed inputs:
 #   results/full_enrichment/enrichment_results.tsv
-# Run: Rscript post-process-scripts/run-figureS7.R
+# Run: Rscript figure-scripts/run-figureS7.R
 # Parallel to run-figureS20.R but for the full (unfiltered) PCA.
 # Shows top 2% band; GO only; intersection_size >= 15.
 # Left panel = unsimplified; right panel = GOSemSim-simplified (Wang similarity, cutoff 0.7).
@@ -23,7 +23,7 @@ setwd(project_root)
 in_file <- file.path("results", "full_enrichment", "enrichment_results.tsv")
 if (!file.exists(in_file))
   stop("Missing: ", in_file,
-       "\nRun: Rscript post-process-scripts/compute-full-gene-enrichment.R")
+       "\nRun: Rscript figure-scripts/compute-full-gene-enrichment.R")
 
 dir.create("figures", recursive = TRUE, showWarnings = FALSE)
 

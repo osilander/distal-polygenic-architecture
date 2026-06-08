@@ -2,7 +2,7 @@
 # Produces: figures/figureS20_gwasremoved_enrichment_dotplot_nearest_gene_plus{flank_kb}kb_top2pct.pdf
 # Pre-computed inputs:
 #   results/gwas_removed_enrichment/enrichment_results_plus{flank_kb}kb.tsv
-# Run: Rscript post-process-scripts/run-figureS20.R [flank_kb]
+# Run: Rscript figure-scripts/run-figureS20.R [flank_kb]
 # Shows top 2% band; GO only; intersection_size >= 15; BP/MF and CC as separate panels.
 
 suppressPackageStartupMessages({
@@ -25,7 +25,7 @@ in_file <- file.path("results", "gwas_removed_enrichment",
                      sprintf("enrichment_results_%s.tsv", flank_label))
 if (!file.exists(in_file))
   stop("Missing: ", in_file,
-       "\nRun: Rscript post-process-scripts/compute-gwas-removed-gene-enrichment.R ", flank_kb)
+       "\nRun: Rscript figure-scripts/compute-gwas-removed-gene-enrichment.R ", flank_kb)
 
 dir.create("figures", recursive = TRUE, showWarnings = FALSE)
 

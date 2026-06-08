@@ -3,7 +3,7 @@
 #           results/trait_pc_category_absrho_summary_pc1_pc8.tsv
 # Pre-computed inputs: results/pca_loadings_50k.tsv, results/all-trait-50k-mean-effects.tsv,
 #                      results/all-trait-50k-mean-pvals.tsv, data/trait_abbrevs_categorised.txt
-# Run: Rscript post-process-scripts/run-figureS3.R
+# Run: Rscript figure-scripts/run-figureS3.R
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -25,7 +25,7 @@ pca_loadings <- fread(pca_loadings_file)
 
 # ---- Rebuild traits_t_scaled ----
 message("FigureS3: rebuilding scaled trait matrix (~2-3 min)...")
-source(file.path("post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path("figure-scripts", "helpers-50k-matrix.R"))
 all_betas <- fread(file.path("results", "all-trait-50k-mean-effects.tsv"))
 all_pvals <- fread(file.path("results", "all-trait-50k-mean-pvals.tsv"))
 prep <- prepare_X_50k(all_betas, all_pvals)

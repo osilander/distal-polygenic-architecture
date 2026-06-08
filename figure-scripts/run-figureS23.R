@@ -5,7 +5,7 @@
 #   results/pca_loadings_50k.tsv,
 #   data/gencode.v19.genes.protein_coding.rds,
 #   results/gwas_removed_distance_topload_50k_plus100kb/reduced_pca_window_loadings.tsv
-# Run: Rscript post-process-scripts/run-figureS23.R
+# Run: Rscript figure-scripts/run-figureS23.R
 
 suppressPackageStartupMessages({
   library(data.table)

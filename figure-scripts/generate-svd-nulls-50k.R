@@ -23,7 +23,7 @@ p_thresh <- NULL
 k_window_save <- 30L
 save_full_window <- FALSE
 eig_tol <- 1e-12
-source(file.path(project_root, "post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path(project_root, "figure-scripts", "helpers-50k-matrix.R"))
 
 assign_pickrell_blocks <- function(coords, pickrell_file) {
   stopifnot(file.exists(pickrell_file))

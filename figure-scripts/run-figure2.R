@@ -3,7 +3,7 @@
 #           figures/figureS15_figure2_extra_zooms.pdf,
 #           results/Supplementary_PC_Top_Loadings_figure2.xlsx (.tsv fallback)
 # Pre-computed inputs: results/pca_loadings_50k.tsv, data/gencode.v19.genes.protein_coding.rds
-# Run: Rscript post-process-scripts/run-figure2.R [--supp-only]
+# Run: Rscript figure-scripts/run-figure2.R [--supp-only]
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -37,7 +37,7 @@ pca_loadings_file <- file.path("results", "pca_loadings_50k.tsv")
 if (!file.exists(pca_loadings_file)) stop("Missing: ", pca_loadings_file, "\nRun run-figure1.R first.")
 pca_loadings <- fread(pca_loadings_file)
 
-source(file.path("post-process-scripts", "helpers-plotting.R"))
+source(file.path("figure-scripts", "helpers-plotting.R"))
 
 chrom_plot_palette <- colorRampPalette(brewer.pal(8, "Set1"))(22)
 

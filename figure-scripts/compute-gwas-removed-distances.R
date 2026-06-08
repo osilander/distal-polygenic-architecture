@@ -6,7 +6,7 @@
 #   random_chrmatched_nearest_removed_distances.tsv.gz,
 #   summary_top_vs_random_distances.tsv
 # Pre-computed inputs: results/all-trait-50k-mean-{effects,pvals}.tsv
-# Run: Rscript post-process-scripts/compute-gwas-removed-distances.R [flank_kb]
+# Run: Rscript figure-scripts/compute-gwas-removed-distances.R [flank_kb]
 #   default flank_kb = 100; run again with 150 for the +150kb variant
 
 suppressPackageStartupMessages({
@@ -41,7 +41,7 @@ out_summary  <- file.path(out_dir, "summary_top_vs_random_distances.tsv")
 
 # ---- Build scaled trait matrix ----
 message("GWAS distance analysis: rebuilding scaled trait matrix (~2-3 min)...")
-source(file.path("post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path("figure-scripts", "helpers-50k-matrix.R"))
 all_betas <- fread(file.path("results", "all-trait-50k-mean-effects.tsv"))
 all_pvals <- fread(file.path("results", "all-trait-50k-mean-pvals.tsv"))
 prep <- prepare_X_50k(all_betas, all_pvals)

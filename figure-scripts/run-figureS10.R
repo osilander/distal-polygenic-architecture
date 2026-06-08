@@ -7,7 +7,7 @@
 #   results/pca_abs50k_from_windows/trait_scores.tsv
 #   results/pca_mean_effect/trait_scores_{50k,100k}_mean.tsv  (from compute-mean-effect-pca.R)
 #   data/trait_abbrevs_categorised.txt
-# Run: Rscript post-process-scripts/run-figureS10.R
+# Run: Rscript figure-scripts/run-figureS10.R
 
 suppressPackageStartupMessages({
   library(data.table)

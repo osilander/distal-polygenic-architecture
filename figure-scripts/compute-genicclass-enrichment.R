@@ -5,7 +5,7 @@
 #   ranked_windows_genicclass_pc1_pc4.tsv.gz
 # Pre-computed inputs: results/pca_loadings_50k.tsv,
 #                      data/gencode.v19.annotation.gtf.gz
-# Run: Rscript post-process-scripts/compute-genicclass-enrichment.R
+# Run: Rscript figure-scripts/compute-genicclass-enrichment.R
 # Runtime: ~5-10 min (100 null reps × 4 PCs × 4 annotation classes × many fracs)
 
 suppressPackageStartupMessages({

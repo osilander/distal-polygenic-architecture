@@ -4,7 +4,7 @@
 #   results/svd-nulls-50k/  (from generate-svd-nulls-50k.R)
 #   results/chunk-withinperm-nulls-50k/  (from prepare-chunk-withinperm-base-50k.R + analyse-chunk-withinperm-nulls-50k.R)
 #   results/all-trait-50k-mean-{effects,pvals}.tsv  (from build-all-trait-matrices.R)
-# Run: Rscript post-process-scripts/compute-figure2-cache.R
+# Run: Rscript figure-scripts/compute-figure2-cache.R
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -16,7 +16,7 @@ suppressPackageStartupMessages({
 
 setDTthreads(1L)
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
-source(file.path(project_root, "post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path(project_root, "figure-scripts", "helpers-50k-matrix.R"))
 
 safe_fread <- function(path, ...) {
   if (grepl("\\.gz$", path, ignore.case = TRUE)) {

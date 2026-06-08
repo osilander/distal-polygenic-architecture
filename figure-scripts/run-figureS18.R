@@ -6,7 +6,7 @@
 #   results/trait_pc_category_absrho_labelperm_pc1_pc14.tsv (for row order),
 #   results/gwas_removed_distance_topload_50k_plus100kb/reduced_pca_window_loadings.tsv,
 #   results/gwas_removed_distance_topload_50k_plus150kb/reduced_pca_window_loadings.tsv
-# Run: Rscript post-process-scripts/run-figureS18.R
+# Run: Rscript figure-scripts/run-figureS18.R
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -168,7 +168,7 @@ dir.create("results", recursive = TRUE, showWarnings = FALSE)
 
 # ---- Rebuild traits_t_scaled ----
 message("FigureS18: rebuilding scaled trait matrix (~2-3 min)...")
-source(file.path("post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path("figure-scripts", "helpers-50k-matrix.R"))
 all_betas <- fread(file.path("results", "all-trait-50k-mean-effects.tsv"))
 all_pvals <- fread(file.path("results", "all-trait-50k-mean-pvals.tsv"))
 prep <- prepare_X_50k(all_betas, all_pvals)

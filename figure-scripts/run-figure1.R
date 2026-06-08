@@ -59,8 +59,8 @@ if (length(.existing_pca_inputs) > 0L) {
 }
 rm(.pca_inputs_for_stale_check, .existing_pca_inputs)
 
-source(file.path("post-process-scripts", "helpers-plotting.R"))
-source(file.path("post-process-scripts", "helpers-trait-labels.R"))
+source(file.path("figure-scripts", "helpers-plotting.R"))
+source(file.path("figure-scripts", "helpers-trait-labels.R"))
 
 trait_categories   <- fread(file.path("data", "trait_abbrevs_categorised.txt"))
 large_plot_palette <- colorRampPalette(brewer.pal(8, "Set1"))(16)

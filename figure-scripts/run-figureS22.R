@@ -5,7 +5,7 @@
 #   data/gencode.v19.genes.protein_coding.rds,
 #   results/gwas_removed_distance_topload_50k_plus100kb/reduced_pca_window_loadings.tsv,
 #   results/gwas_removed_distance_topload_50k_plus100kb/removed_windows_gwas_plus100kb.tsv
-# Run: Rscript post-process-scripts/run-figureS22.R [flank_kb]
+# Run: Rscript figure-scripts/run-figureS22.R [flank_kb]
 #   default flank_kb = 100
 
 suppressPackageStartupMessages({

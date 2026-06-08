@@ -5,7 +5,7 @@
 # Pre-computed inputs:
 #   results/all-trait-{50k,100k,200k,500k,1m}-mean-effects.tsv (from build-all-trait-matrices.R)
 #   data/trait_abbrevs_categorised.txt
-# Run: Rscript post-process-scripts/run-figureS11.R
+# Run: Rscript figure-scripts/run-figureS11.R
 
 suppressPackageStartupMessages({
   library(data.table)

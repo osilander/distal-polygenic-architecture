@@ -12,7 +12,7 @@ project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
 out_dir <- file.path(project_root, "results", "chunk-withinperm-nulls-50k")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 base_file <- file.path(project_root, "results", "chunk-withinperm-nulls-50k", "hpc_base", "chunk_withinperm_base_50k.rds")
-source(file.path(project_root, "post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path(project_root, "figure-scripts", "helpers-50k-matrix.R"))
 
 n_perm <- if (length(args) >= 1L) as.integer(args[[1]]) else 100L
 if (!is.finite(n_perm) || n_perm < 1L) stop("n_perm must be a positive integer")

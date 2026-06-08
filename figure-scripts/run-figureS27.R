@@ -6,7 +6,7 @@
 #   results/gwas_removed_distance_topload_50k_plus{flank_kb}kb/reduced_pca_window_loadings.tsv
 #     (from compute-gwas-removed-distances.R)
 #   data/gencode.v19.genes.protein_coding.rds
-# Run: Rscript post-process-scripts/run-figureS27.R [flank_kb]
+# Run: Rscript figure-scripts/run-figureS27.R [flank_kb]
 #   default flank_kb = 100
 # Runtime: ~5-8 hr (10000 null replicates × 4 PCs × 4 bands)
 # Scientific question: do top-loading windows remain near gene bodies after GWAS hits are removed?
@@ -50,7 +50,7 @@ loadings_file <- file.path("results",
   "reduced_pca_window_loadings.tsv")
 if (!file.exists(loadings_file))
   stop("Missing reduced loadings: ", loadings_file,
-       "\nRun: Rscript post-process-scripts/compute-gwas-removed-distances.R ", flank_kb)
+       "\nRun: Rscript figure-scripts/compute-gwas-removed-distances.R ", flank_kb)
 ld <- fread(loadings_file)
 if (!all(c("chrom", "start", "end") %in% names(ld))) {
   ld[, c("chrom", "start", "end") := tstrsplit(window_id, "_", fixed = TRUE)]

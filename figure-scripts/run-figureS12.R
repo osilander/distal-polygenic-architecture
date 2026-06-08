@@ -4,7 +4,7 @@
 #   results/allbyall_cosine_matrices/allbyall_cosine_long_pc1_pc4.tsv
 #   results/allbyall_cosine_matrices/allbyall_procrustes_long_k4_k8_k25_k50_k75.tsv
 #   results/allbyall_cosine_matrices/entrysign_perm100_procrustes_normalized_12x12.tsv
-# Run: Rscript post-process-scripts/run-figureS12.R
+# Run: Rscript figure-scripts/run-figureS12.R
 
 suppressPackageStartupMessages({
   library(data.table)

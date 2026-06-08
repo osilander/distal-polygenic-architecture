@@ -4,7 +4,7 @@
 #                                             heatmap_matrix_top60}.tsv
 # Pre-computed inputs: results/all-trait-50k-mean-{effects,pvals}.tsv,
 #                      data/trait_abbrevs_categorised.txt
-# Run: Rscript post-process-scripts/run-figureS9.R
+# Run: Rscript figure-scripts/run-figureS9.R
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -33,7 +33,7 @@ dir.create("results", recursive = TRUE, showWarnings = FALSE)
 
 # ---- Rebuild traits_t_scaled ----
 message("FigureS9: rebuilding scaled trait matrix (~2-3 min)...")
-source(file.path("post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path("figure-scripts", "helpers-50k-matrix.R"))
 all_betas <- fread(file.path("results", "all-trait-50k-mean-effects.tsv"))
 all_pvals <- fread(file.path("results", "all-trait-50k-mean-pvals.tsv"))
 prep <- prepare_X_50k(all_betas, all_pvals)

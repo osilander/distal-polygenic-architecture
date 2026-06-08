@@ -4,7 +4,7 @@
 # Pre-computed inputs:
 #   results/gwas_removed_distance_topload_50k_plus100kb/ (from compute-gwas-removed-distances.R 100)
 #   results/gwas_removed_distance_topload_50k_plus150kb/ (from compute-gwas-removed-distances.R 150)
-# Run: Rscript post-process-scripts/compute-gwas-removed-cdf-ribbon.R
+# Run: Rscript figure-scripts/compute-gwas-removed-cdf-ribbon.R
 
 suppressPackageStartupMessages({
   library(data.table)

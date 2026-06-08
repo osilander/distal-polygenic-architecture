@@ -4,7 +4,7 @@
 # Pre-computed inputs:
 #   results/gwas_removed_distance_topload_50k_plus{flank_kb}kb/reduced_pca_window_loadings.tsv
 #   data/gencode.v19.genes.protein_coding.rds
-# Run: Rscript post-process-scripts/compute-gwas-removed-gene-enrichment.R [flank_kb]
+# Run: Rscript figure-scripts/compute-gwas-removed-gene-enrichment.R [flank_kb]
 #   default flank_kb = 100
 # Requires: clusterProfiler, org.Hs.eg.db, msigdbr, GOSemSim  (all local, no internet needed)
 #   GOSemSim is required for GO term redundancy reduction via clusterProfiler::simplify()
@@ -43,7 +43,7 @@ loadings_file <- file.path("results",
   "reduced_pca_window_loadings.tsv")
 if (!file.exists(loadings_file))
   stop("Missing: ", loadings_file,
-       "\nRun: Rscript post-process-scripts/compute-gwas-removed-distances.R ", flank_kb)
+       "\nRun: Rscript figure-scripts/compute-gwas-removed-distances.R ", flank_kb)
 genes_rds <- file.path(project_root, "data", "gencode.v19.genes.protein_coding.rds")
 if (!file.exists(genes_rds)) stop("Missing genes RDS: ", genes_rds)
 

@@ -4,7 +4,7 @@
 #   (25k is also built here; run-pca-25k-min20-anchored.R separately builds the
 #    SNP-filtered 25k matrix all-trait-25k-mean-effects-snp20.tsv.)
 # Pre-computed inputs: data/windows_filtered/*_w*.summary.tsv (via data/ symlink)
-# Run: Rscript post-process-scripts/build-all-trait-matrices.R
+# Run: Rscript figure-scripts/build-all-trait-matrices.R
 # Runtime: ~10-30 min depending on number of window sizes
 
 suppressPackageStartupMessages({

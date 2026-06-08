@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # Produces: figures/figureS2_robustness_checks.pdf
 # Requires: results/svd_robustness/*.tsv  (from compute-svd-robustness.R)
-# Run: Rscript post-process-scripts/run-figureS2.R
+# Run: Rscript figure-scripts/run-figureS2.R
 
 suppressPackageStartupMessages({
   library(data.table)

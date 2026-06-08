@@ -3,7 +3,7 @@
 #           results/nearestgene_nonzero_distance_cdf_ribbon_50k_bands.tsv,
 #           results/nearestgene_nonzero_distance_cdf_ribbon_50k_bands_pvalues.tsv
 # Pre-computed inputs: results/pca_loadings_50k.tsv, data/gencode.v19.genes.protein_coding.rds
-# Run: Rscript post-process-scripts/run-figureS25.R
+# Run: Rscript figure-scripts/run-figureS25.R
 # Runtime: ~5-8 hr (10000 null replicates × 4 PCs × 4 bands)
 
 suppressPackageStartupMessages({

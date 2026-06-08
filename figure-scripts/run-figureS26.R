@@ -6,7 +6,7 @@
 #   results/observed-nearest-patterns-gwasremoved150kb-top1_2_5_band45_50/
 #     observed_nearestgene_bin_enrichment_gwasremoved150kb_top1_2_5_band45_50.tsv
 #     (from compute-nearestgene-pattern-bands.R gwasremoved default gene_only {100|150})
-# Run: Rscript post-process-scripts/run-figureS26.R
+# Run: Rscript figure-scripts/run-figureS26.R
 # Note: stacks 100 kb and 150 kb removal flanks as separate rows in a single patchwork figure.
 
 suppressPackageStartupMessages({
@@ -31,7 +31,7 @@ load_flank <- function(flank_kb) {
     sprintf("observed_nearestgene_bin_enrichment_%s_top1_2_5_band45_50.tsv", file_tag))
   if (!file.exists(bins_file))
     stop("Missing input: ", bins_file,
-         "\nRun: Rscript post-process-scripts/compute-nearestgene-pattern-bands.R gwasremoved default gene_only ", flank_kb)
+         "\nRun: Rscript figure-scripts/compute-nearestgene-pattern-bands.R gwasremoved default gene_only ", flank_kb)
   dt <- fread(bins_file)
   dt[, flank_label := sprintf("\u00b1%d kb flanks removed", flank_kb)]
   dt

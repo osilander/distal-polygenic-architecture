@@ -5,7 +5,7 @@
 #   results/pca_loadings_50k.tsv (from run-figure1.R)
 #   results/all-trait-50k-mean-{effects,pvals}.tsv
 #   data/trait_abbrevs_categorised.txt
-# Run: Rscript post-process-scripts/compute-trait-pc-category-labelperm.R
+# Run: Rscript figure-scripts/compute-trait-pc-category-labelperm.R
 # Runtime: ~5 min (1000 permutations)
 
 suppressPackageStartupMessages({
@@ -18,7 +18,7 @@ suppressPackageStartupMessages({
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
 setwd(project_root)
 
-source(file.path("post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path("figure-scripts", "helpers-50k-matrix.R"))
 
 set.seed(20260415)
 pcs <- paste0("PC", 1:14)
