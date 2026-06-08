@@ -6,7 +6,7 @@ Scripts are run from the project root (`distal-polygenic-architecture/`).
 ---
 ## Quick build-status check
 ```r
-Rscript post-process-scripts/check-build-status.R
+Rscript figure-scripts/check-build-status.R
 ```
 Verifies data symlink, HPC inputs, intermediate results, and reports what can and cannot be built.
 
@@ -23,24 +23,29 @@ The machine-readable dependency graph is in `manifest.tsv` (columns: output, gen
 ## Directory structure
 ```
 distal-polygenic-architecture/
-  data/                          → not in git; populate from Zenodo + HPC (see Setup)
-    allbyall_cosine_matrices/    → Zenodo: hpc-nulls.tar.gz
-    entry_flip/                  → Zenodo: hpc-nulls.tar.gz
-    withinblock_perm/            → Zenodo: hpc-nulls.tar.gz
-    observed/                    → Zenodo: hpc-nulls.tar.gz
-    gencode.v19.annotation.gtf.gz   → Zenodo: reference-data.tar.gz
-    gencode.v19.genes.protein_coding.rds → Zenodo: reference-data.tar.gz
-    pickrell_blocks.bed          → Zenodo: reference-data.tar.gz
-    trait_abbrevs_categorised.txt   → Zenodo: reference-data.tar.gz
-    windows_filtered/            → HPC: slurms/build-windows.slurm (not on Zenodo)
-  results/                       → generated outputs (not in git)
-  figures/                       → figure PDFs
-  figure-scripts/                → R scripts
-  slurms/                        → HPC SLURM scripts
-    build-windows.slurm          → array job: per-trait window summaries → data/windows_filtered/
-    chunk-withinperm-prepare.slurm → step 1: prepare chunk within-perm base
-    chunk-withinperm-run.slurm   → step 2: array job workers (→ results/chunk-withinperm-nulls-50k/)
+  data/                              → not in git; populate from Zenodo + HPC (see Setup)
+    svd-nulls-50k/                   → Zenodo: hpc-nulls.tar.gz
+      entry_flip/                      100 × singular values; iter001 trait vectors
+      withinblock_perm/                100 × singular values; iter001 trait vectors
+      observed/                        Observed singular values and trait/window vectors
+    allbyall_cosine_matrices/        → Zenodo: hpc-nulls.tar.gz
+    chunk_withinperm_base/           → Zenodo: hpc-nulls.tar.gz
+      chunk_withinperm_base_50k.rds    Prepared base object for scree null analysis
+    reference/                       → Zenodo: reference-data.tar.gz
+      gencode.v19.annotation.gtf.gz
+      gencode.v19.genes.protein_coding.rds
+      pickrell_blocks.bed
+      trait_abbrevs_categorised.txt
+    windows_filtered/                → HPC only (not on Zenodo): slurms/build-windows.slurm
+  results/                           → generated outputs (not in git)
+  figures/                           → figure PDFs
+  figure-scripts/                    → R scripts
+  slurms/                            → HPC SLURM scripts
+    build-windows.slurm                Array job: per-trait window summaries → data/windows_filtered/
+    chunk-withinperm-prepare.slurm     Step 1: prepare chunk within-perm base RDS on HPC
+    chunk-withinperm-run.slurm         Step 2: array job workers → results/chunk-withinperm-nulls-50k/
   README.md
+  data/README.md                     → Zenodo deposit description
 ```
 
 ---
@@ -49,34 +54,46 @@ distal-polygenic-architecture/
 ### Step A — Download from Zenodo
 Download the two archives from the Zenodo deposit and extract into the repo root:
 ```bash
-tar -xzf hpc-nulls.tar.gz        # → data/{entry_flip,withinblock_perm,observed,allbyall_cosine_matrices}/
-tar -xzf reference-data.tar.gz   # → data/{gencode.*,pickrell_blocks.bed,trait_abbrevs_categorised.txt}
+tar -xzf hpc-nulls.tar.gz       # → data/svd-nulls-50k/, data/allbyall_cosine_matrices/, data/chunk_withinperm_base/
+tar -xzf reference-data.tar.gz  # → data/reference/
 ```
 
-### Step B — Symlink data/ into results/
-Scripts expect HPC null outputs under `results/svd-nulls-50k/` and `results/allbyall_cosine_matrices/`:
+### Step B — Symlink reference files into data/ root
+Scripts reference annotation files directly under `data/`:
 ```bash
-mkdir -p results/svd-nulls-50k
-ln -s ../../data/observed              results/svd-nulls-50k/observed
-ln -s ../../data/entry_flip            results/svd-nulls-50k/entry_flip
-ln -s ../../data/withinblock_perm      results/svd-nulls-50k/withinblock_perm
-ln -s ../data/allbyall_cosine_matrices results/allbyall_cosine_matrices
+ln -s reference/gencode.v19.annotation.gtf.gz        data/gencode.v19.annotation.gtf.gz
+ln -s reference/gencode.v19.genes.protein_coding.rds  data/gencode.v19.genes.protein_coding.rds
+ln -s reference/pickrell_blocks.bed                   data/pickrell_blocks.bed
+ln -s reference/trait_abbrevs_categorised.txt         data/trait_abbrevs_categorised.txt
 ```
 
-### Step C — HPC-only inputs (not on Zenodo)
-Two items cannot be included in the Zenodo deposit and must be generated via HPC:
+### Step C — Symlink data/ into results/
+Scripts expect HPC null outputs under `results/svd-nulls-50k/`, `results/allbyall_cosine_matrices/`,
+and `results/chunk-withinperm-nulls-50k/hpc_base/`:
+```bash
+mkdir -p results/svd-nulls-50k results/chunk-withinperm-nulls-50k
+
+ln -s ../../data/svd-nulls-50k/entry_flip       results/svd-nulls-50k/entry_flip
+ln -s ../../data/svd-nulls-50k/withinblock_perm results/svd-nulls-50k/withinblock_perm
+ln -s ../../data/svd-nulls-50k/observed         results/svd-nulls-50k/observed
+ln -s ../data/allbyall_cosine_matrices          results/allbyall_cosine_matrices
+ln -s ../../data/chunk_withinperm_base          results/chunk-withinperm-nulls-50k/hpc_base
+```
+
+### Step D — HPC-only inputs (not on Zenodo)
+Two items must be generated via HPC and are not in the Zenodo deposit:
 
 | What | How | Needed for |
 |------|-----|-----------|
 | `data/windows_filtered/` | `slurms/build-windows.slurm` (array job over all traits) | Step 0 matrix build, FigureS1/S8/S11 |
-| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Run `slurms/chunk-withinperm-prepare.slurm` then `slurms/chunk-withinperm-run.slurm` (array), then `Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R` | Figure 1 scree panel |
+| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Copy `chunk_withinperm_base_50k.rds` to HPC (already in Zenodo), run `slurms/chunk-withinperm-prepare.slurm`, then `slurms/chunk-withinperm-run.slurm` (array job), then run `Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R` locally | Figure 1 scree panel |
 
 ---
 ## Full build order
 Scripts must be run from the **project root** (`distal-polygenic-architecture/`). Listed in dependency order.
 ### Step 0 — Build all trait × window matrices
 ```r
-Rscript post-process-scripts/build-all-trait-matrices.R
+Rscript figure-scripts/build-all-trait-matrices.R
 ```
 Reads `data/windows_filtered/*_w*.summary.tsv` (via `data/` symlink) and writes
 `results/all-trait-{25k,50k,100k,200k,500k,1m,...}-mean-{effects,pvals,rand-mean-effects}.tsv`
@@ -85,7 +102,7 @@ for every window size present.
 ---
 ### Step 1 — Pre-compute trait-PC category permutation table (needed by Figure 1)
 ```r
-Rscript post-process-scripts/compute-trait-pc-category-labelperm.R
+Rscript figure-scripts/compute-trait-pc-category-labelperm.R
 ```
 **Outputs:** `results/trait_pc_category_absrho_labelperm_pc1_pc14.tsv`,
 `figures/figureS4_trait_pc_category_absrho_labelperm_pc1_pc14.pdf`
@@ -95,7 +112,7 @@ Rscript post-process-scripts/compute-trait-pc-category-labelperm.R
 ---
 ### Step 2 — 25k PCA (needed by FigureS10 and S12)
 ```r
-Rscript post-process-scripts/run-pca-25k-min20-anchored.R
+Rscript figure-scripts/run-pca-25k-min20-anchored.R
 ```
 **Outputs:** `results/pca_multiscale_anchored/pca_traits_25k_anchored.tsv` + window loadings, scree, flips.
 Also writes `results/all-trait-25k-mean-effects-snp20.tsv` (SNP≥20 filter).
@@ -104,9 +121,9 @@ Also writes `results/all-trait-25k-mean-effects-snp20.tsv` (SNP≥20 filter).
 ---
 ### Step 3 — GWAS-removed distance analyses (needed by Figures 3, S13, S18–S23)
 ```r
-Rscript post-process-scripts/compute-gwas-removed-distances.R 100
-Rscript post-process-scripts/compute-gwas-removed-distances.R 150
-Rscript post-process-scripts/compute-gwas-removed-cdf-ribbon.R
+Rscript figure-scripts/compute-gwas-removed-distances.R 100
+Rscript figure-scripts/compute-gwas-removed-distances.R 150
+Rscript figure-scripts/compute-gwas-removed-cdf-ribbon.R
 ```
 
 ---
@@ -115,17 +132,17 @@ These are HPC-generated. Copy from the source repo rather than re-running locall
 If re-running is needed:
 ```bash
 # Part A: SVD nulls (trait_flip, entry_flip, withinblock_perm — 100 iters each)
-Rscript post-process-scripts/generate-svd-nulls-50k.R 100
+Rscript figure-scripts/generate-svd-nulls-50k.R 100
 # Part B: Chunked within-permutation nulls
-Rscript post-process-scripts/prepare-chunk-withinperm-base-50k.R
-Rscript post-process-scripts/analyse-chunk-withinperm-nulls-50k.R 100
+Rscript figure-scripts/prepare-chunk-withinperm-base-50k.R
+Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R 100
 ```
 **Outputs:** `results/svd-nulls-50k/`, `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz`
 
 ---
 ### Step 5 — Figure 1 scree cache (needed by Figure 1)
 ```r
-Rscript post-process-scripts/compute-figure2-cache.R
+Rscript figure-scripts/compute-figure2-cache.R
 ```
 **Outputs:** `results/figure2_cache_50k.rds`
 **Requires:** Step 0 complete, Step 4 outputs present.
@@ -135,8 +152,8 @@ Rscript post-process-scripts/compute-figure2-cache.R
 These are HPC-generated. Copy from the source repo rather than re-running locally.
 If re-running is needed:
 ```bash
-Rscript post-process-scripts/run-allbyall-cosine-matrices.R
-Rscript post-process-scripts/run-entrysign-perm-procrustes-normalized.R
+Rscript figure-scripts/run-allbyall-cosine-matrices.R
+Rscript figure-scripts/run-entrysign-perm-procrustes-normalized.R
 ```
 **Outputs:** `results/allbyall_cosine_matrices/`
 **Requires:** Steps 0, 2, 3, 4 complete; FigureS8 and FigureS9 complete.
@@ -147,7 +164,7 @@ Rscript post-process-scripts/run-entrysign-perm-procrustes-normalized.R
 ---
 ### FigureS1 — Window SNP count distributions
 ```r
-Rscript post-process-scripts/run-figureS1.R
+Rscript figure-scripts/run-figureS1.R
 ```
 **Outputs:** `figures/figureS1_window_snp_count_histograms_50k.pdf`,
 `results/window_snp_count_histograms_50k.tsv`
@@ -156,20 +173,20 @@ Rscript post-process-scripts/run-figureS1.R
 ---
 ### FigureS2 — SVD robustness checks
 ```r
-Rscript post-process-scripts/run-figureS2.R
+Rscript figure-scripts/run-figureS2.R
 ```
 **Outputs:** `figures/figureS2_robustness_checks.pdf`
 **Requires:** `results/svd_robustness/*.tsv` (from `compute-svd-robustness.R`).
 **Appearance:** Five-panel figure. (a) Per-PC cosine similarity to original decomposition across 100 random and stratified 2/3 trait subsampling replicates. (b) Procrustes similarity for trait subsampling (k = 4, 8). (c) Per-PC cosine similarity for 100 window subsampling replicates on the full and GWAS-depleted matrices. (d) Procrustes similarity for window subsampling. (e) Leave-one-category-out cosine similarity for PC1–PC8, sorted by PC1 disruption; observed values colour-coded using the ag_Sunset palette (warm = low cosine = structurally important category); grey bars show size-matched null (30 replicates, median + 95% interval).
 To recompute the robustness TSVs from scratch:
 ```r
-Rscript post-process-scripts/compute-svd-robustness.R
+Rscript figure-scripts/compute-svd-robustness.R
 ```
 
 ---
 ### FigureS3 — Trait-category × PC Spearman ρ boxplot
 ```r
-Rscript post-process-scripts/run-figureS3.R
+Rscript figure-scripts/run-figureS3.R
 ```
 **Outputs:** `figures/figureS3_trait_pc_category_absrho_boxplot_pc1_pc8.pdf`,
 `results/trait_pc_category_absrho_summary_pc1_pc8.tsv`
@@ -178,7 +195,7 @@ Rscript post-process-scripts/run-figureS3.R
 ---
 ### FigureS4 — Trait-category × PC label-permutation heatmap (standalone)
 ```r
-Rscript post-process-scripts/compute-trait-pc-category-labelperm.R
+Rscript figure-scripts/compute-trait-pc-category-labelperm.R
 ```
 **Outputs:** `figures/figureS4_trait_pc_category_absrho_labelperm_pc1_pc14.pdf`
 (also produced as part of Step 1; see above)
@@ -186,7 +203,7 @@ Rscript post-process-scripts/compute-trait-pc-category-labelperm.R
 ---
 ### Figure 1 + FigureS5 + FigureS6 — PCA scatters, UMAP, trait heatmap
 ```r
-Rscript post-process-scripts/run-figure1.R
+Rscript figure-scripts/run-figure1.R
 ```
 **Outputs:**
 - `figures/figure1.pdf`
@@ -198,7 +215,7 @@ Rscript post-process-scripts/run-figure1.R
 ---
 ### FigureS7 — Full enrichment dotplot (nearest gene, unfiltered PCA)
 ```r
-Rscript post-process-scripts/run-figureS7.R
+Rscript figure-scripts/run-figureS7.R
 ```
 **Outputs:** `figures/figureS7_full_enrichment_dotplot_nearest_gene_top2pct.pdf`
 **Requires:** `results/full_enrichment/enrichment_results.tsv` (from `compute-full-gene-enrichment.R`); `GOSemSim`, `org.Hs.eg.db`.
@@ -207,7 +224,7 @@ Rscript post-process-scripts/run-figureS7.R
 ---
 ### FigureS8 — Absolute-value PCA from raw window files
 ```r
-Rscript post-process-scripts/run-figureS8.R
+Rscript figure-scripts/run-figureS8.R
 ```
 **Outputs:** `figures/figureS8_pca_abs50k_from_windows.pdf`,
 `results/pca_abs50k_from_windows/{trait_scores,window_loadings,singular_values,scree_fullspectrum,window_coordinates,heatmap_matrix_top60}.tsv`
@@ -216,7 +233,7 @@ Rscript post-process-scripts/run-figureS8.R
 ---
 ### FigureS9 — Absolute-value PCA from mean effects
 ```r
-Rscript post-process-scripts/run-figureS9.R
+Rscript figure-scripts/run-figureS9.R
 ```
 **Outputs:** `figures/figureS9_pca_absolute_50k.pdf`,
 `results/figureS_pca_absolute_50k_{trait_scores,scree,window_loadings_top200,heatmap_matrix_top60}.tsv`
@@ -225,7 +242,7 @@ Rscript post-process-scripts/run-figureS9.R
 ---
 ### FigureS10 — Within/over/between cosine coherence
 ```r
-Rscript post-process-scripts/run-figureS10.R
+Rscript figure-scripts/run-figureS10.R
 ```
 **Outputs:** `figures/figureS10_within_over_between_abs_cosine_k4_k8_normalized_expanded.pdf`
 **Requires:** FigureS9 complete, FigureS11 complete, Step 2 complete.
@@ -233,7 +250,7 @@ Rscript post-process-scripts/run-figureS10.R
 ---
 ### FigureS11 — Multiscale PCA scatter + cosine/Procrustes heatmaps
 ```r
-Rscript post-process-scripts/run-figureS11.R
+Rscript figure-scripts/run-figureS11.R
 ```
 **Outputs:** `figures/figureS11_multiscale_pca_cosine_50k_1m.pdf`,
 `results/pca_multiscale_anchored/{pca_traits,pca_windows,pca_scree,pca_anchor_flips}_{50k,100k,200k,500k,1m}_anchored.tsv`
@@ -242,7 +259,7 @@ Rscript post-process-scripts/run-figureS11.R
 ---
 ### FigureS12 — All-by-all Procrustes heatmaps
 ```r
-Rscript post-process-scripts/run-figureS12.R
+Rscript figure-scripts/run-figureS12.R
 ```
 **Outputs:** `figures/figureS12_allbyall_procrustes_heatmaps.pdf`
 **Requires:** `results/allbyall_cosine_matrices/` **†**.
@@ -250,7 +267,7 @@ Rscript post-process-scripts/run-figureS12.R
 ---
 ### Figure 2 + FigureS15 — Manhattan plots and locus zooms
 ```r
-Rscript post-process-scripts/run-figure2.R
+Rscript figure-scripts/run-figure2.R
 ```
 **Outputs:** `figures/figure2.pdf`, `figures/figureS15_figure2_extra_zooms.pdf`,
 `results/Supplementary_PC_Top_Loadings_figure2.xlsx`
@@ -259,7 +276,7 @@ Rscript post-process-scripts/run-figure2.R
 ---
 ### Figure 3 + FigureS13 — GWAS-removed PCA
 ```r
-Rscript post-process-scripts/run-figure3.R
+Rscript figure-scripts/run-figure3.R
 ```
 **Outputs:** `figures/figure3.pdf`, `figures/figureS13_figure3_pc4_manhattans.pdf`
 **Requires:** Step 3 complete, `results/pca_loadings_50k.tsv`.
@@ -267,7 +284,7 @@ Rscript post-process-scripts/run-figure3.R
 ---
 ### FigureS14 — Within-permutation loading concentration (withinperm peaks)
 ```r
-Rscript post-process-scripts/run-figureS14.R
+Rscript figure-scripts/run-figureS14.R
 ```
 **Outputs:** `figures/figureS14_withinperm_peaks_pc1_4.pdf`
 **Inputs:** `results/withinperm_peaks_iter_metrics.tsv`, `results/withinperm_peaks_summary.tsv`
@@ -276,9 +293,9 @@ Rscript post-process-scripts/run-figureS14.R
 ---
 ### FigureS16 + FigureS24 — Nearest-peak and nearest-gene pattern comparison (50k vs 100k)
 ```r
-Rscript post-process-scripts/compute-nearestgene-pattern-bands.R 50k
-Rscript post-process-scripts/compute-nearestgene-pattern-bands.R 100k
-Rscript post-process-scripts/run-figureS16-and-S24.R
+Rscript figure-scripts/compute-nearestgene-pattern-bands.R 50k
+Rscript figure-scripts/compute-nearestgene-pattern-bands.R 100k
+Rscript figure-scripts/run-figureS16-and-S24.R
 ```
 **Outputs:** `figures/figureS16_observed_nearestgwaspeak_pattern_summary_50k_100k_comparison.pdf`,
 `figures/figureS24_observed_nearestgene_pattern_summary_50k_100k_comparison.pdf`
@@ -289,7 +306,7 @@ Rscript post-process-scripts/run-figureS16-and-S24.R
 ---
 ### FigureS17 — Chr9 and Chr17 per-trait p-value scatter
 ```r
-Rscript post-process-scripts/run-figureS17.R
+Rscript figure-scripts/run-figureS17.R
 ```
 **Outputs:** `figures/figureS17_chr9_chr17_pval_scatter.pdf`
 **Requires:** `results/all-trait-50k-mean-pvals.tsv`.
@@ -298,7 +315,7 @@ Rscript post-process-scripts/run-figureS17.R
 ---
 ### FigureS18 — GWAS-removed trait-category × PC heatmap
 ```r
-Rscript post-process-scripts/run-figureS18.R
+Rscript figure-scripts/run-figureS18.R
 ```
 **Outputs:** `figures/figureS18_gwas_removed_trait_pc_category_absrho_labelperm_pc1_pc14.pdf`
 **Requires:** Step 3 complete.
@@ -307,7 +324,7 @@ Rscript post-process-scripts/run-figureS18.R
 ---
 ### FigureS19 — GWAS-removed PC correlation heatmap
 ```r
-Rscript post-process-scripts/run-figureS19.R
+Rscript figure-scripts/run-figureS19.R
 ```
 **Outputs:** `figures/figureS19_gwas_removed_pc_correlations_pc1_pc4.pdf`
 **Requires:** Step 3 complete, `results/pca_loadings_50k.tsv`.
@@ -315,7 +332,7 @@ Rscript post-process-scripts/run-figureS19.R
 ---
 ### FigureS20 — GWAS-removed GO enrichment dotplot
 ```r
-Rscript post-process-scripts/run-figureS20.R [flank_kb]
+Rscript figure-scripts/run-figureS20.R [flank_kb]
 ```
 **Outputs:** `figures/figureS20_gwasremoved_enrichment_dotplot_nearest_gene_plus{flank_kb}kb_top2pct.pdf`
 **Requires:** `results/gwas_removed_enrichment/enrichment_results_plus{flank_kb}kb.tsv` (from `compute-gwas-removed-gene-enrichment.R`); `GOSemSim`, `org.Hs.eg.db`.
@@ -324,8 +341,8 @@ Rscript post-process-scripts/run-figureS20.R [flank_kb]
 ---
 ### FigureS21 — GWAS-removed within-permutation loading concentration
 ```r
-Rscript post-process-scripts/compute-gwasremoved-withinperm-peaks.R [n_perm]
-Rscript post-process-scripts/run-figureS21.R
+Rscript figure-scripts/compute-gwasremoved-withinperm-peaks.R [n_perm]
+Rscript figure-scripts/run-figureS21.R
 ```
 **Outputs:** `figures/figureS21_gwasremoved_withinperm_peaks_pc1_4.pdf`
 **Inputs:** `results/gwasremoved_withinperm_peaks_iter_metrics.tsv`, `results/gwasremoved_withinperm_peaks_summary.tsv`
@@ -334,7 +351,7 @@ Rscript post-process-scripts/run-figureS21.R
 ---
 ### FigureS22 — Figure 3 extra locus zooms (±100 kb)
 ```r
-Rscript post-process-scripts/run-figureS22.R
+Rscript figure-scripts/run-figureS22.R
 ```
 **Outputs:** `figures/figureS22_figure3_extra_zooms_plus100kb.pdf`
 **Requires:** Step 3 complete, `results/pca_loadings_50k.tsv`.
@@ -342,7 +359,7 @@ Rscript post-process-scripts/run-figureS22.R
 ---
 ### FigureS23 — GWAS-removed subspace scatter
 ```r
-Rscript post-process-scripts/run-figureS23.R
+Rscript figure-scripts/run-figureS23.R
 ```
 **Outputs:** `figures/figureS23_gwas_removed_subspace_scatter.pdf`,
 `results/figureS23_gwas_removed_subspace_scatter.tsv`
@@ -352,10 +369,10 @@ Rscript post-process-scripts/run-figureS23.R
 ### Figure 4 — Nearest-gene enrichment panels
 Run upstream scripts first, then assemble the figure:
 ```r
-Rscript post-process-scripts/compute-nearestgene-patterns.R gene 10000
-Rscript post-process-scripts/compute-genicclass-enrichment.R
-Rscript post-process-scripts/run-figureS-nearestgene-cdf-top1pct.R
-Rscript post-process-scripts/run-figure4.R
+Rscript figure-scripts/compute-nearestgene-patterns.R gene 10000
+Rscript figure-scripts/compute-genicclass-enrichment.R
+Rscript figure-scripts/run-figureS-nearestgene-cdf-top1pct.R
+Rscript figure-scripts/run-figure4.R
 ```
 **Outputs:** `figures/figure4.pdf`
 **Also writes** (upstream scripts):
@@ -370,7 +387,7 @@ Rscript post-process-scripts/run-figure4.R
 ---
 ### FigureS25 — Nearest-gene distance CDF ribbons (bands)
 ```r
-Rscript post-process-scripts/run-figureS25.R
+Rscript figure-scripts/run-figureS25.R
 ```
 **Outputs:** `figures/figureS25_nearestgene_nonzero_distance_cdf_ribbon_50k_bands.pdf`,
 `results/nearestgene_nonzero_distance_cdf_ribbon_50k_bands.tsv`,
@@ -380,7 +397,7 @@ Rscript post-process-scripts/run-figureS25.R
 ---
 ### FigureS26 — GWAS-removed nearest-gene pattern (100 kb and 150 kb flanks stacked)
 ```r
-Rscript post-process-scripts/run-figureS26.R
+Rscript figure-scripts/run-figureS26.R
 ```
 **Outputs:** `figures/figureS26_gwasremoved_nearestgene_pattern_summary_gwasremoved100_150kb.pdf`
 **Note:** stacks 100 kb and 150 kb removal flanks as separate rows.
@@ -390,7 +407,7 @@ Rscript post-process-scripts/run-figureS26.R
 ---
 ### FigureS27 — GWAS-removed nearest-gene distance CDF ribbons (bands)
 ```r
-Rscript post-process-scripts/run-figureS27.R [flank_kb]
+Rscript figure-scripts/run-figureS27.R [flank_kb]
 ```
 **Outputs:** `figures/figureS27_gwasremoved_nearestgene_nonzero_distance_cdf_ribbon_50k_bands_plus{flank_kb}kb.pdf`,
 `results/gwasremoved_nearestgene_nonzero_distance_cdf_ribbon_50k_bands_plus{flank_kb}kb.tsv`,
