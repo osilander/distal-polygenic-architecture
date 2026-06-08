@@ -31,11 +31,10 @@ distal-polygenic-architecture/
     allbyall_cosine_matrices/        → Zenodo: hpc-nulls.tar.gz
     chunk_withinperm_base/           → Zenodo: hpc-nulls.tar.gz
       chunk_withinperm_base_50k.rds    Prepared base object for scree null analysis
-    reference/                       → Zenodo: reference-data.tar.gz
-      gencode.v19.annotation.gtf.gz
-      gencode.v19.genes.protein_coding.rds
-      pickrell_blocks.bed
-      trait_abbrevs_categorised.txt
+    gencode.v19.annotation.gtf.gz    → Zenodo: reference-data.tar.gz
+    gencode.v19.genes.protein_coding.rds → Zenodo: reference-data.tar.gz
+    pickrell_blocks.bed              → Zenodo: reference-data.tar.gz
+    trait_abbrevs_categorised.txt   → Zenodo: reference-data.tar.gz
     windows_filtered/                → HPC only (not on Zenodo): slurms/build-windows.slurm
   results/                           → generated outputs (not in git)
   figures/                           → figure PDFs
@@ -55,19 +54,10 @@ distal-polygenic-architecture/
 Download the two archives from the Zenodo deposit and extract into the repo root:
 ```bash
 tar -xzf hpc-nulls.tar.gz       # → data/svd-nulls-50k/, data/allbyall_cosine_matrices/, data/chunk_withinperm_base/
-tar -xzf reference-data.tar.gz  # → data/reference/
+tar -xzf reference-data.tar.gz  # → data/gencode.*, data/pickrell_blocks.bed, data/trait_abbrevs_categorised.txt
 ```
 
-### Step B — Symlink reference files into data/ root
-Scripts reference annotation files directly under `data/`:
-```bash
-ln -s reference/gencode.v19.annotation.gtf.gz        data/gencode.v19.annotation.gtf.gz
-ln -s reference/gencode.v19.genes.protein_coding.rds  data/gencode.v19.genes.protein_coding.rds
-ln -s reference/pickrell_blocks.bed                   data/pickrell_blocks.bed
-ln -s reference/trait_abbrevs_categorised.txt         data/trait_abbrevs_categorised.txt
-```
-
-### Step C — Symlink data/ into results/
+### Step B — Symlink data/ into results/
 Scripts expect HPC null outputs under `results/svd-nulls-50k/`, `results/allbyall_cosine_matrices/`,
 and `results/chunk-withinperm-nulls-50k/hpc_base/`:
 ```bash
@@ -80,7 +70,7 @@ ln -s ../data/allbyall_cosine_matrices          results/allbyall_cosine_matrices
 ln -s ../../data/chunk_withinperm_base          results/chunk-withinperm-nulls-50k/hpc_base
 ```
 
-### Step D — HPC-only inputs (not on Zenodo)
+### Step C — HPC-only inputs (not on Zenodo)
 Two items must be generated via HPC and are not in the Zenodo deposit:
 
 | What | How | Needed for |
