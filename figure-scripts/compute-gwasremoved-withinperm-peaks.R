@@ -15,6 +15,7 @@
 suppressPackageStartupMessages(library(data.table))
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+dir.create("results", recursive = TRUE, showWarnings = FALSE)
 source(file.path(project_root, "figure-scripts", "helpers-50k-matrix.R"))
 
 args   <- commandArgs(trailingOnly = TRUE)

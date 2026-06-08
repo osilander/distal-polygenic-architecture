@@ -20,7 +20,7 @@
 suppressPackageStartupMessages(library(data.table))
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
-vec_dir      <- file.path(project_root, "results", "permute-window-vectors")
+vec_dir      <- file.path(project_root, "results", "chunk-withinperm-nulls-50k", "hpc_runs", "window_vectors")
 out_dir      <- file.path(project_root, "results")
 
 N_PCS   <- 4L

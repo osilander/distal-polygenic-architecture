@@ -5,7 +5,7 @@
 # Run: Rscript figure-scripts/run-figureS7.R
 # Parallel to run-figureS20.R but for the full (unfiltered) PCA.
 # Shows top 2% band; GO only; intersection_size >= 15.
-# Left panel = unsimplified; right panel = GOSemSim-simplified (Wang similarity, cutoff 0.7).
+# Shows GOSemSim-simplified terms only (Wang similarity, cutoff 0.7).
 # Requires: GOSemSim, org.Hs.eg.db (for semantic similarity reduction).
 
 suppressPackageStartupMessages({
@@ -144,7 +144,7 @@ prep_dt <- function(dt) {
 dt_orig <- prep_dt(dt_orig)
 dt_simp <- prep_dt(dt_simp)
 
-# ---- Shared colour scale (full unsimplified range) ----
+# ---- Shared colour scale ----
 log10p_max <- ceiling(max(dt_orig$log10p, na.rm = TRUE))
 log10p_min <- 1
 ylgnbu     <- brewer.pal(9, "YlGnBu")
@@ -189,7 +189,7 @@ panel_n <- function(p) {
   length(levels(p$data$term_short))
 }
 
-# ---- Dot plots: left = unsimplified, right = simplified ----
+# ---- Dot plots: GO:BP/MF panel (A) and GO:CC panel (B), simplified terms only ----
 bands_show <- c("Top 2%")
 band_slug  <- c("Top 1%" = "top1pct", "Top 2%" = "top2pct")
 

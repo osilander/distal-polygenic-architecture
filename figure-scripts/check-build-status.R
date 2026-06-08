@@ -104,7 +104,9 @@ core_items <- list(
   list(path = file.path(project_root, "results", "pca_multiscale_anchored", "pca_traits_100k_anchored.tsv"), label = "results/pca_multiscale_anchored/pca_traits_100k_anchored.tsv"),
   list(path = file.path(project_root, "results", "pca_multiscale_anchored", "pca_traits_200k_anchored.tsv"), label = "results/pca_multiscale_anchored/pca_traits_200k_anchored.tsv"),
   list(path = file.path(project_root, "results", "gwas_removed_distance_topload_50k_plus100kb", "reduced_pca_trait_scores.tsv"), label = "results/gwas_removed_distance_topload_50k_plus100kb/"),
-  list(path = file.path(project_root, "results", "gwas_removed_distance_topload_50k_plus150kb", "reduced_pca_trait_scores.tsv"), label = "results/gwas_removed_distance_topload_50k_plus150kb/")
+  list(path = file.path(project_root, "results", "gwas_removed_distance_topload_50k_plus150kb", "reduced_pca_trait_scores.tsv"), label = "results/gwas_removed_distance_topload_50k_plus150kb/"),
+  list(path = file.path(project_root, "results", "withinperm_peaks_iter_metrics.tsv"),           label = "results/withinperm_peaks_iter_metrics.tsv  (FigureS14 input; run compute-withinperm-peaks-50k.R)"),
+  list(path = file.path(project_root, "results", "gwasremoved_withinperm_peaks_iter_metrics.tsv"), label = "results/gwasremoved_withinperm_peaks_iter_metrics.tsv  (FigureS21 input; run compute-gwasremoved-withinperm-peaks.R)")
 )
 
 core_missing <- 0L

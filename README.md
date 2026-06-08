@@ -283,12 +283,14 @@ Rscript figure-scripts/run-figure3.R
 
 ---
 ### FigureS14 — Within-permutation loading concentration (withinperm peaks)
+Generate the input tables first, then plot:
 ```r
+Rscript figure-scripts/compute-withinperm-peaks-50k.R
 Rscript figure-scripts/run-figureS14.R
 ```
 **Outputs:** `figures/figureS14_withinperm_peaks_pc1_4.pdf`
-**Inputs:** `results/withinperm_peaks_iter_metrics.tsv`, `results/withinperm_peaks_summary.tsv`
-**Requires:** HPC-generated withinperm null outputs.
+**Intermediates:** `results/withinperm_peaks_iter_metrics.tsv`, `results/withinperm_peaks_summary.tsv`
+**Requires:** `results/pca_loadings_50k.tsv`; chunk within-perm window vectors in `results/chunk-withinperm-nulls-50k/hpc_runs/window_vectors/` (produced by `slurms/chunk-withinperm-run.slurm`).
 
 ---
 ### FigureS16 + FigureS24 — Nearest-peak and nearest-gene pattern comparison (50k vs 100k)

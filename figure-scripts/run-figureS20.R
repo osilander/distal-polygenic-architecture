@@ -34,7 +34,7 @@ dt_all <- fread(in_file)
 dt_all <- dt_all[grepl("^GO:", source) & intersection_size >= 15L & pc != "cross_pc"]
 if (nrow(dt_all) == 0L) { message("No qualifying results to plot."); quit(save = "no") }
 
-# Save unfiltered copy for the left (unsimplified) panel
+# Save unfiltered copy to set colour scale range before simplification
 dt_orig <- copy(dt_all)
 
 # ---- Semantic-similarity-based redundancy reduction (GOSemSim) ----
@@ -162,7 +162,7 @@ prep_dt <- function(dt) {
 dt_orig <- prep_dt(dt_orig)
 dt_simp <- prep_dt(dt_simp)
 
-# ---- Shared colour scale: use full (unsimplified) range so both panels are comparable ----
+# ---- Shared colour scale: set from full pre-simplification range for consistency ----
 log10p_max <- ceiling(max(dt_orig$log10p, na.rm = TRUE))
 log10p_min <- 1
 ylgnbu     <- brewer.pal(9, "YlGnBu")
@@ -210,7 +210,7 @@ panel_n <- function(p) {
   length(levels(p$data$term_short))
 }
 
-# ---- Dot plots: left = unsimplified, right = simplified ----
+# ---- Dot plots: GO:BP/MF panel (A) and GO:CC panel (B), simplified terms only ----
 bands_show <- c("Top 2%")
 band_slug  <- c("Top 1%" = "top1pct", "Top 2%" = "top2pct")
 
