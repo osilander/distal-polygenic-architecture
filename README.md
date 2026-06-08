@@ -29,11 +29,11 @@ distal-polygenic-architecture/
       observed/                        Observed singular values and trait/window vectors
     allbyall_cosine_matrices/        → Zenodo: allbyall_cosine_matrices.tar.gz
     chunk_withinperm_base_50k.rds    → Zenodo: single file (134 MB); base object for scree null analysis
-    gencode.v19.annotation.gtf.gz    → Zenodo: reference-data.tar.gz
-    gencode.v19.genes.protein_coding.rds → Zenodo: reference-data.tar.gz
-    pickrell_blocks.bed              → Zenodo: reference-data.tar.gz
-    trait_abbrevs_categorised.txt   → Zenodo: reference-data.tar.gz
-    windows_filtered/                → HPC only (not on Zenodo): slurms/build-windows.slurm
+    gencode.v19.annotation.gtf.gz    → Zenodo: direct file
+    gencode.v19.genes.protein_coding.rds → Zenodo: direct file
+    pickrell_blocks.bed              → Zenodo: direct file
+    trait_abbrevs_categorised.txt   → Zenodo: direct file
+    windows_filtered/                → Zenodo: windows_w{size}.tar.gz (extract per size needed)
   results/                           → generated outputs (not in git)
   figures/                           → figure PDFs (generated; not in git)
   figure-scripts/                    → R scripts
@@ -49,15 +49,16 @@ distal-polygenic-architecture/
 ## Setup — populating data/ and results/
 
 ### Step A — Download from Zenodo
-Download the archives from the Zenodo deposit and extract into the `data/` directory:
+All Zenodo files are uploaded individually. Download them into `data/` and extract the archives:
 ```bash
 cd data/
 tar -xzf svd-nulls-50k.tar.gz              # → data/svd-nulls-50k/{entry_flip,withinblock_perm,observed}/
 tar -xzf allbyall_cosine_matrices.tar.gz   # → data/allbyall_cosine_matrices/
-# chunk_withinperm_base_50k.rds is a single file; place at data/chunk_withinperm_base_50k.rds
-# reference files (gencode.*, pickrell_blocks.bed, trait_abbrevs_categorised.txt) go directly in data/
-# window summaries (optional; only needed for Step 0):
-# tar -xzf windows_w50000.tar.gz           # → data/windows_filtered/ (repeat for each size needed)
+# chunk_withinperm_base_50k.rds and reference files (gencode.*, pickrell_blocks.bed,
+# trait_abbrevs_categorised.txt) are direct files — no extraction needed
+# window summaries (optional; only needed for Step 0 and FigureS1/S8/S11):
+mkdir -p windows_filtered
+tar -xzf windows_w50000.tar.gz -C windows_filtered/   # repeat for each size needed
 cd ..
 ```
 
