@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# analyse-withinperm-peaks-50k.R
+# compute-withinperm-peaks-50k.R
 #
 # Compares observed PC1-4 window loading distributions against 250kb and 500kb
 # within-block permutation nulls, using three metrics:
@@ -15,7 +15,7 @@
 #   results/withinperm_peaks_iter_metrics.tsv      -- per-iteration metrics
 #   results/withinperm_peaks_summary.tsv           -- observed vs null summary
 #
-# Run from project root: Rscript figure-scripts/analyse-withinperm-peaks-50k.R
+# Run from project root: Rscript figure-scripts/compute-withinperm-peaks-50k.R
 
 suppressPackageStartupMessages(library(data.table))
 

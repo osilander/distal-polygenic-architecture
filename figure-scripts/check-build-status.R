@@ -47,7 +47,7 @@ if (!file.exists(pickrell)) {
 
 genes_rds <- file.path(project_root, "data", "gencode.v19.genes.protein_coding.rds")
 if (!file.exists(genes_rds)) {
-  warn("data/gencode.v19.genes.protein_coding.rds not found — run-figureS-nearestgene-cdf-top1pct.R, FigureS25, and FigureS27 will fail")
+  warn("data/gencode.v19.genes.protein_coding.rds not found — compute-nearestgene-cdf-top1pct.R, FigureS25, and FigureS27 will fail")
   errors <- errors + 1L
 } else {
   ok("data/gencode.v19.genes.protein_coding.rds")

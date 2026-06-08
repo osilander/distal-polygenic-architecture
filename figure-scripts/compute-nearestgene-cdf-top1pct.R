@@ -4,7 +4,7 @@
 #           results/nearestgene_nonzero_distance_cdf_ribbon_50k_top1pct_pvalues.tsv
 # Pre-computed inputs: results/pca_loadings_50k.tsv, data/gencode.v19.genes.protein_coding.rds
 # Run BEFORE run-figure4.R.
-# Run: Rscript figure-scripts/run-figureS-nearestgene-cdf-top1pct.R
+# Run: Rscript figure-scripts/compute-nearestgene-cdf-top1pct.R
 # Runtime: ~2-3 hr (10000 null replicates × 4 PCs)
 
 suppressPackageStartupMessages({

@@ -1,4 +1,23 @@
 #!/usr/bin/env Rscript
+# summarise-chunk-withinperm-hpc-50k.R
+#
+# HPC collector: reads per-iteration outputs written by chunk-withinperm-worker-50k.R
+# (via slurms/chunk-withinperm-run.slurm) and assembles them into the final
+# results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz.
+#
+# This is the HPC array-job pathway. The local alternative (no HPC needed) is
+# analyse-chunk-withinperm-nulls-50k.R, which re-runs permutations from the
+# Zenodo base RDS (data/chunk_withinperm_base_50k.rds).
+#
+# Pre-computed inputs:
+#   results/chunk-withinperm-nulls-50k/hpc_base/observed_metrics_50k.tsv
+#   results/chunk-withinperm-nulls-50k/hpc_base/observed_scree_50k.tsv
+#   results/chunk-withinperm-nulls-50k/hpc_runs/metrics/*_metrics.tsv
+#   results/chunk-withinperm-nulls-50k/hpc_runs/scree/*_scree.tsv.gz
+# Produces:
+#   results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz
+#   results/chunk-withinperm-nulls-50k/chunk_withinperm_metrics_runs_50k.tsv
+# Run: Rscript figure-scripts/summarise-chunk-withinperm-hpc-50k.R
 
 suppressPackageStartupMessages({
   library(data.table)

@@ -371,7 +371,7 @@ Run upstream scripts first, then assemble the figure:
 ```r
 Rscript figure-scripts/compute-nearestgene-patterns.R gene 10000
 Rscript figure-scripts/compute-genicclass-enrichment.R
-Rscript figure-scripts/run-figureS-nearestgene-cdf-top1pct.R
+Rscript figure-scripts/compute-nearestgene-cdf-top1pct.R
 Rscript figure-scripts/run-figure4.R
 ```
 **Outputs:** `figures/figure4.pdf`

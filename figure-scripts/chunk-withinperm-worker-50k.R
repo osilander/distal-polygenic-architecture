@@ -1,4 +1,21 @@
 #!/usr/bin/env Rscript
+# chunk-withinperm-worker-50k.R
+#
+# HPC array-job worker: runs one permutation iteration of the chunk within-block
+# permutation null and writes per-iteration metrics and scree outputs to
+# results/chunk-withinperm-nulls-50k/hpc_runs/.
+#
+# Called by slurms/chunk-withinperm-run.slurm for each array task.
+# After all workers complete, run summarise-chunk-withinperm-hpc-50k.R to collect.
+#
+# Pre-computed inputs:
+#   results/chunk-withinperm-nulls-50k/hpc_base/chunk_withinperm_base_50k.rds
+# Produces (one file per iter):
+#   results/chunk-withinperm-nulls-50k/hpc_runs/metrics/{scheme}_iter{NNN}_metrics.tsv
+#   results/chunk-withinperm-nulls-50k/hpc_runs/scree/{scheme}_iter{NNN}_scree.tsv.gz
+# Usage: Rscript figure-scripts/chunk-withinperm-worker-50k.R <scheme> <iter>
+#   scheme: chunk250kb_withinperm | chunk500kb_withinperm
+#   iter:   integer >= 1
 
 suppressPackageStartupMessages({
   library(data.table)
