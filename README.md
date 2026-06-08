@@ -76,7 +76,7 @@ Two items must be generated via HPC and are not in the Zenodo deposit:
 | What | How | Needed for |
 |------|-----|-----------|
 | `data/windows_filtered/` | `slurms/build-windows.slurm` (array job over all traits) | Step 0 matrix build, FigureS1/S8/S11 |
-| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Copy `chunk_withinperm_base_50k.rds` to HPC (already in Zenodo), run `slurms/chunk-withinperm-prepare.slurm`, then `slurms/chunk-withinperm-run.slurm` (array job), then run `Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R` locally | Figure 1 scree panel |
+| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Run `slurms/chunk-withinperm-prepare.slurm` on HPC, then `slurms/chunk-withinperm-run.slurm` (array job using `figure-scripts/chunk-withinperm-worker-50k.R`), then `Rscript figure-scripts/summarise-chunk-withinperm-hpc-50k.R` to collect; or re-run locally via `Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R` using the Zenodo base RDS | Figure 1 scree panel |
 
 ---
 ## Full build order
@@ -118,14 +118,20 @@ Rscript figure-scripts/compute-gwas-removed-cdf-ribbon.R
 
 ---
 ### Step 4 — SVD null permutations (needed by Figure 1 scree, FigureS12)
-These are HPC-generated. Copy from the source repo rather than re-running locally.
-If re-running is needed:
+The SVD null outputs (`results/svd-nulls-50k/`) are provided via Zenodo (`hpc-nulls.tar.gz`) and
+symlinked into `results/` in Setup Step B. If re-running from scratch:
 ```bash
-# Part A: SVD nulls (trait_flip, entry_flip, withinblock_perm — 100 iters each)
 Rscript figure-scripts/generate-svd-nulls-50k.R 100
-# Part B: Chunked within-permutation nulls
-Rscript figure-scripts/prepare-chunk-withinperm-base-50k.R
-Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R 100
+```
+The chunk within-permutation scree runs are generated separately. Two options:
+```bash
+# Option A — HPC array job (faster):
+sbatch slurms/chunk-withinperm-prepare.slurm          # produces hpc_base/ RDS
+sbatch --array=1-200 slurms/chunk-withinperm-run.slurm  # 100 iters × 2 chunk sizes
+Rscript figure-scripts/summarise-chunk-withinperm-hpc-50k.R  # collect into .tsv.gz
+
+# Option B — local re-run from Zenodo base RDS (slower, no HPC needed):
+Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R
 ```
 **Outputs:** `results/svd-nulls-50k/`, `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz`
 

@@ -11,7 +11,7 @@ effects_file <- file.path(project_root, "results", "all-trait-50k-mean-effects.t
 pvals_file <- file.path(project_root, "results", "all-trait-50k-mean-pvals.tsv")
 out_dir <- file.path(project_root, "results", "chunk-withinperm-nulls-50k", "hpc_base")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
-source(file.path(project_root, "post-process-scripts", "helpers-50k-matrix.R"))
+source(file.path(project_root, "figure-scripts", "helpers-50k-matrix.R"))
 
 impute_number <- 5L
 p_thresh <- NULL

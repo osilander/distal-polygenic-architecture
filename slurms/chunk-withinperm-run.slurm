@@ -9,13 +9,7 @@
 
 set -euo pipefail
 
-# NOTE: this script calls figure-scripts/chunk-withinperm-worker-50k.R which is
-# not included in this repository. It is retained here for reference only.
-# The local alternative is to run figure-scripts/analyse-chunk-withinperm-nulls-50k.R
-# directly after extracting the Zenodo hpc-nulls.tar.gz, which re-runs the
-# permutations locally from data/chunk_withinperm_base/chunk_withinperm_base_50k.rds.
-#
-# Usage (if worker script is available on HPC):
+# Usage:
 #   sbatch --array=1-200 --export=ALL,N_PERM=100 slurms/chunk-withinperm-run.slurm
 # Mapping:
 #   1..N_PERM          -> chunk250kb_withinperm iter 1..N_PERM
