@@ -21,6 +21,6 @@ export MKL_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
 export OPENBLAS_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
 export VECLIB_MAXIMUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
 
-Rscript post-process-scripts/prepare-chunk-withinperm-base-50k.R
+Rscript figure-scripts/prepare-chunk-withinperm-base-50k.R
 
 echo "Done base prep in ${BUNDLE_DIR}"
