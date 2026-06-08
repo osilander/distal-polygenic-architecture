@@ -1,7 +1,7 @@
 # distal-polygenic-architecture
 Post-processing pipeline for all figures in the distal polygenic architecture manuscript.
 Scripts are run from the project root (`distal-polygenic-architecture/`).
-> **Repo intent:** code release. `figures/`, `data/`, and `results/` are not tracked in git. Pre-computed HPC outputs and reference files are distributed via Zenodo (see below); `data/windows_filtered/` (large, per-trait GWAS window summaries) must be generated via HPC.
+> **Repo intent:** code release. `figures/`, `data/`, and `results/` are not tracked in git and will not exist on a fresh checkout — figure scripts create them on first run. Pre-computed HPC outputs and reference files are distributed via Zenodo (see below); `data/windows_filtered/` must be generated via HPC. A working copy may also contain local-only files (`*.tar.gz`, `*.pdf`, `*.txt`) that are gitignored and not part of the tracked repo surface.
 
 ---
 ## Quick build-status check

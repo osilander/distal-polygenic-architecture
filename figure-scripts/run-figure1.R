@@ -25,6 +25,8 @@ suppressPackageStartupMessages({
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
 setwd(project_root)
+dir.create("figures", recursive = TRUE, showWarnings = FALSE)
+dir.create("results", recursive = TRUE, showWarnings = FALSE)
 
 fig2_cache <- file.path("results", "figure2_cache_50k.rds")
 heat_tsv   <- file.path("results", "trait_pc_category_absrho_labelperm_pc1_pc14.tsv")

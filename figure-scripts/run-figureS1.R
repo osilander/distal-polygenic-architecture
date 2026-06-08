@@ -15,6 +15,8 @@ suppressPackageStartupMessages({
 setDTthreads(1L)
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+dir.create("figures", recursive = TRUE, showWarnings = FALSE)
+dir.create("results", recursive = TRUE, showWarnings = FALSE)
 in_dir <- file.path(project_root, "data", "windows_filtered")
 out_fig <- file.path(project_root, "figures", "figureS1_window_snp_count_histograms_50k.pdf")
 out_tsv <- file.path(project_root, "results", "window_snp_count_histograms_50k.tsv")

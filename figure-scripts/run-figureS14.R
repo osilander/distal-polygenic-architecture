@@ -1,8 +1,9 @@
 #!/usr/bin/env Rscript
 # run-figureS14.R
 #
-# Plots observed vs within-block permutation null for three loading
-# concentration metrics across PC1-4.
+# Plots observed vs within-block permutation null for two loading
+# concentration metrics across PC1-4: Gini coefficient of |loadings|
+# and mean run length of top-1% windows.
 #
 # Input:  results/withinperm_peaks_iter_metrics.tsv
 #         results/withinperm_peaks_summary.tsv
@@ -17,6 +18,7 @@ suppressPackageStartupMessages({
 })
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+dir.create("figures", recursive = TRUE, showWarnings = FALSE)
 
 iter_dt <- fread(file.path(project_root, "results", "withinperm_peaks_iter_metrics.tsv"))
 summ_dt <- fread(file.path(project_root, "results", "withinperm_peaks_summary.tsv"))

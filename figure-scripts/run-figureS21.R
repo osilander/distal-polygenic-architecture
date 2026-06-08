@@ -18,6 +18,7 @@ suppressPackageStartupMessages({
 })
 
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+dir.create("figures", recursive = TRUE, showWarnings = FALSE)
 
 iter_dt <- fread(file.path(project_root, "results",
                            "gwasremoved_withinperm_peaks_iter_metrics.tsv"))
