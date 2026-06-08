@@ -73,7 +73,7 @@ ln -s ../../data/svd-nulls-50k/withinblock_perm                    results/svd-n
 ln -s ../../data/svd-nulls-50k/observed                            results/svd-nulls-50k/observed
 ln -s ../data/allbyall_cosine_matrices                             results/allbyall_cosine_matrices
 ln -s ../../../data/chunk_withinperm_base_50k.rds                  results/chunk-withinperm-nulls-50k/hpc_base/chunk_withinperm_base_50k.rds
-ln -s ../../data/chunk_withinperm_scree_runs_50k.tsv.gz            results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz
+cp data/chunk_withinperm_scree_runs_50k.tsv.gz                     results/chunk-withinperm-nulls-50k/
 ```
 
 ### Step C — HPC-only inputs (not on Zenodo)
