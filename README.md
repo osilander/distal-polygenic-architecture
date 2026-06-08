@@ -16,7 +16,7 @@ Verifies data symlink, HPC inputs, intermediate results, and reports what can an
 |------|----------------|-------------|
 | **Fully local** | All figure scripts (run-figure\*.R, run-figureS\*.R) and downstream summaries | Zenodo data downloaded and symlinked into `results/` (see Setup below) |
 | **Local if windows available** | Step 0 matrix build; FigureS1, FigureS8, FigureS11 | `data/windows_filtered/` (generate via `slurms/build-windows.slurm`) |
-| **Pre-computed — copy from Zenodo sibling repo** | Figure 1 scree panel | `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` — see Step 4 |
+| **Fully local (via Zenodo)** | Figure 1 scree panel | `chunk_withinperm_scree_runs_50k.tsv.gz` included in Zenodo deposit; symlinked in Setup Step B |
 
 ---
 ## Directory structure
@@ -68,11 +68,12 @@ and `results/chunk-withinperm-nulls-50k/hpc_base/`:
 ```bash
 mkdir -p results/svd-nulls-50k results/chunk-withinperm-nulls-50k/hpc_base
 
-ln -s ../../data/svd-nulls-50k/entry_flip            results/svd-nulls-50k/entry_flip
-ln -s ../../data/svd-nulls-50k/withinblock_perm      results/svd-nulls-50k/withinblock_perm
-ln -s ../../data/svd-nulls-50k/observed              results/svd-nulls-50k/observed
-ln -s ../data/allbyall_cosine_matrices               results/allbyall_cosine_matrices
-ln -s ../../../data/chunk_withinperm_base_50k.rds    results/chunk-withinperm-nulls-50k/hpc_base/chunk_withinperm_base_50k.rds
+ln -s ../../data/svd-nulls-50k/entry_flip                          results/svd-nulls-50k/entry_flip
+ln -s ../../data/svd-nulls-50k/withinblock_perm                    results/svd-nulls-50k/withinblock_perm
+ln -s ../../data/svd-nulls-50k/observed                            results/svd-nulls-50k/observed
+ln -s ../data/allbyall_cosine_matrices                             results/allbyall_cosine_matrices
+ln -s ../../../data/chunk_withinperm_base_50k.rds                  results/chunk-withinperm-nulls-50k/hpc_base/chunk_withinperm_base_50k.rds
+ln -s ../../data/chunk_withinperm_scree_runs_50k.tsv.gz            results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz
 ```
 
 ### Step C — HPC-only inputs (not on Zenodo)
@@ -81,7 +82,7 @@ Two items are not in the Zenodo deposit and must be generated via HPC:
 | What | How | Needed for |
 |------|-----|-----------|
 | `data/windows_filtered/` | `slurms/build-windows.slurm` (array job over all traits); or extract Zenodo `windows_w*.tar.gz` per window size needed | Step 0 matrix build, FigureS1/S8/S11 |
-| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Pre-computed — copy from companion Zenodo deposit (see Step 4) | Figure 1 scree panel |
+| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Included in Zenodo deposit (`data/`); symlinked in Setup Step B | Figure 1 scree panel |
 
 ---
 ## Full build order
@@ -127,14 +128,10 @@ The SVD null outputs (`results/svd-nulls-50k/`) are provided via Zenodo (`svd-nu
 and symlinked into `results/` in Setup Step B above — no action needed.
 
 The chunk within-permutation scree file (`chunk_withinperm_scree_runs_50k.tsv.gz`) is
-pre-computed and available in the companion Zenodo deposit for the directional-coherence
-manuscript (same research group). Copy it directly:
-```bash
-mkdir -p results/chunk-withinperm-nulls-50k
-cp /path/to/directional-coherence/results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz \
-   results/chunk-withinperm-nulls-50k/
-```
-If the file is unavailable, it can be regenerated (this takes several hours):
+included in this Zenodo deposit (`data/`) and symlinked into `results/` by the command
+above. No additional steps are needed.
+
+If the file needs to be regenerated from raw data (this takes several hours):
 ```bash
 # Option A — local re-run from Zenodo base RDS:
 Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R
