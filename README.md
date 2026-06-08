@@ -16,7 +16,7 @@ Verifies data symlink, HPC inputs, intermediate results, and reports what can an
 |------|----------------|-------------|
 | **Fully local** | All figure scripts (run-figure\*.R, run-figureS\*.R) and downstream summaries | Zenodo data downloaded and symlinked into `results/` (see Setup below) |
 | **Local if windows available** | Step 0 matrix build; FigureS1, FigureS8, FigureS11 | `data/windows_filtered/` (generate via `slurms/build-windows.slurm`) |
-| **Blocked — HPC required** | Figure 1 scree panel | `chunk_withinperm_scree_runs_50k.tsv.gz` (generate via `slurms/chunk-withinperm-*.slurm`) |
+| **Pre-computed — copy from Zenodo sibling repo** | Figure 1 scree panel | `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` — see Step 4 |
 
 ---
 ## Directory structure
@@ -81,7 +81,7 @@ Two items are not in the Zenodo deposit and must be generated via HPC:
 | What | How | Needed for |
 |------|-----|-----------|
 | `data/windows_filtered/` | `slurms/build-windows.slurm` (array job over all traits); or extract Zenodo `windows_w*.tar.gz` per window size needed | Step 0 matrix build, FigureS1/S8/S11 |
-| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Re-run locally: `Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R` (uses `data/chunk_withinperm_base_50k.rds` from Zenodo); or run on HPC via `slurms/chunk-withinperm-*.slurm` | Figure 1 scree panel |
+| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Pre-computed — copy from companion Zenodo deposit (see Step 4) | Figure 1 scree panel |
 
 ---
 ## Full build order
@@ -123,22 +123,28 @@ Rscript figure-scripts/compute-gwas-removed-cdf-ribbon.R
 
 ---
 ### Step 4 — SVD null permutations (needed by Figure 1 scree, FigureS12)
-The SVD null outputs (`results/svd-nulls-50k/`) are provided via Zenodo (`hpc-nulls.tar.gz`) and
-symlinked into `results/` in Setup Step B. If re-running from scratch:
-```bash
-Rscript figure-scripts/generate-svd-nulls-50k.R 100
-```
-The chunk within-permutation scree runs are generated separately. Two options:
-```bash
-# Option A — HPC array job (faster):
-sbatch slurms/chunk-withinperm-prepare.slurm          # produces hpc_base/ RDS
-sbatch --array=1-200 slurms/chunk-withinperm-run.slurm  # 100 iters × 2 chunk sizes
-Rscript figure-scripts/summarise-chunk-withinperm-hpc-50k.R  # collect into .tsv.gz
+The SVD null outputs (`results/svd-nulls-50k/`) are provided via Zenodo (`svd-nulls-50k.tar.gz`)
+and symlinked into `results/` in Setup Step B above — no action needed.
 
-# Option B — local re-run from Zenodo base RDS (slower, no HPC needed):
-Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R
+The chunk within-permutation scree file (`chunk_withinperm_scree_runs_50k.tsv.gz`) is
+pre-computed and available in the companion Zenodo deposit for the directional-coherence
+manuscript (same research group). Copy it directly:
+```bash
+mkdir -p results/chunk-withinperm-nulls-50k
+cp /path/to/directional-coherence/results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz \
+   results/chunk-withinperm-nulls-50k/
 ```
-**Outputs:** `results/svd-nulls-50k/`, `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz`
+If the file is unavailable, it can be regenerated (this takes several hours):
+```bash
+# Option A — local re-run from Zenodo base RDS:
+Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R
+
+# Option B — HPC array job:
+sbatch slurms/chunk-withinperm-prepare.slurm
+sbatch --array=1-200 slurms/chunk-withinperm-run.slurm
+Rscript figure-scripts/summarise-chunk-withinperm-hpc-50k.R
+```
+**Outputs:** `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz`
 
 ---
 ### Step 5 — Figure 1 scree cache (needed by Figure 1)
