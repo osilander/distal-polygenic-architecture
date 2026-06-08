@@ -23,13 +23,12 @@ Verifies data symlink, HPC inputs, intermediate results, and reports what can an
 ```
 distal-polygenic-architecture/
   data/                              → not in git; populate from Zenodo + HPC (see Setup)
-    svd-nulls-50k/                   → Zenodo: hpc-nulls.tar.gz
+    svd-nulls-50k/                   → Zenodo: svd-nulls-50k.tar.gz
       entry_flip/                      100 × singular values; iter001 trait vectors
       withinblock_perm/                100 × singular values; iter001 trait vectors
       observed/                        Observed singular values and trait/window vectors
-    allbyall_cosine_matrices/        → Zenodo: hpc-nulls.tar.gz
-    chunk_withinperm_base/           → Zenodo: hpc-nulls.tar.gz
-      chunk_withinperm_base_50k.rds    Prepared base object for scree null analysis
+    allbyall_cosine_matrices/        → Zenodo: allbyall_cosine_matrices.tar.gz
+    chunk_withinperm_base_50k.rds    → Zenodo: single file (134 MB); base object for scree null analysis
     gencode.v19.annotation.gtf.gz    → Zenodo: reference-data.tar.gz
     gencode.v19.genes.protein_coding.rds → Zenodo: reference-data.tar.gz
     pickrell_blocks.bed              → Zenodo: reference-data.tar.gz
@@ -50,32 +49,38 @@ distal-polygenic-architecture/
 ## Setup — populating data/ and results/
 
 ### Step A — Download from Zenodo
-Download the two archives from the Zenodo deposit and extract into the repo root:
+Download the archives from the Zenodo deposit and extract into the `data/` directory:
 ```bash
-tar -xzf hpc-nulls.tar.gz       # → data/svd-nulls-50k/, data/allbyall_cosine_matrices/, data/chunk_withinperm_base/
-tar -xzf reference-data.tar.gz  # → data/gencode.*, data/pickrell_blocks.bed, data/trait_abbrevs_categorised.txt
+cd data/
+tar -xzf svd-nulls-50k.tar.gz              # → data/svd-nulls-50k/{entry_flip,withinblock_perm,observed}/
+tar -xzf allbyall_cosine_matrices.tar.gz   # → data/allbyall_cosine_matrices/
+# chunk_withinperm_base_50k.rds is a single file; place at data/chunk_withinperm_base_50k.rds
+# reference files (gencode.*, pickrell_blocks.bed, trait_abbrevs_categorised.txt) go directly in data/
+# window summaries (optional; only needed for Step 0):
+# tar -xzf windows_w50000.tar.gz           # → data/windows_filtered/ (repeat for each size needed)
+cd ..
 ```
 
 ### Step B — Symlink data/ into results/
 Scripts expect HPC null outputs under `results/svd-nulls-50k/`, `results/allbyall_cosine_matrices/`,
 and `results/chunk-withinperm-nulls-50k/hpc_base/`:
 ```bash
-mkdir -p results/svd-nulls-50k results/chunk-withinperm-nulls-50k
+mkdir -p results/svd-nulls-50k results/chunk-withinperm-nulls-50k/hpc_base
 
-ln -s ../../data/svd-nulls-50k/entry_flip       results/svd-nulls-50k/entry_flip
-ln -s ../../data/svd-nulls-50k/withinblock_perm results/svd-nulls-50k/withinblock_perm
-ln -s ../../data/svd-nulls-50k/observed         results/svd-nulls-50k/observed
-ln -s ../data/allbyall_cosine_matrices          results/allbyall_cosine_matrices
-ln -s ../../data/chunk_withinperm_base          results/chunk-withinperm-nulls-50k/hpc_base
+ln -s ../../data/svd-nulls-50k/entry_flip            results/svd-nulls-50k/entry_flip
+ln -s ../../data/svd-nulls-50k/withinblock_perm      results/svd-nulls-50k/withinblock_perm
+ln -s ../../data/svd-nulls-50k/observed              results/svd-nulls-50k/observed
+ln -s ../data/allbyall_cosine_matrices               results/allbyall_cosine_matrices
+ln -s ../../../data/chunk_withinperm_base_50k.rds    results/chunk-withinperm-nulls-50k/hpc_base/chunk_withinperm_base_50k.rds
 ```
 
 ### Step C — HPC-only inputs (not on Zenodo)
-Two items must be generated via HPC and are not in the Zenodo deposit:
+Two items are not in the Zenodo deposit and must be generated via HPC:
 
 | What | How | Needed for |
 |------|-----|-----------|
-| `data/windows_filtered/` | `slurms/build-windows.slurm` (array job over all traits) | Step 0 matrix build, FigureS1/S8/S11 |
-| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Run `slurms/chunk-withinperm-prepare.slurm` on HPC, then `slurms/chunk-withinperm-run.slurm` (array job using `figure-scripts/chunk-withinperm-worker-50k.R`), then `Rscript figure-scripts/summarise-chunk-withinperm-hpc-50k.R` to collect; or re-run locally via `Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R` using the Zenodo base RDS | Figure 1 scree panel |
+| `data/windows_filtered/` | `slurms/build-windows.slurm` (array job over all traits); or extract Zenodo `windows_w*.tar.gz` per window size needed | Step 0 matrix build, FigureS1/S8/S11 |
+| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Re-run locally: `Rscript figure-scripts/analyse-chunk-withinperm-nulls-50k.R` (uses `data/chunk_withinperm_base_50k.rds` from Zenodo); or run on HPC via `slurms/chunk-withinperm-*.slurm` | Figure 1 scree panel |
 
 ---
 ## Full build order
