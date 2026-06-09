@@ -28,8 +28,8 @@ if (!is.finite(flank_kb) || flank_kb < 0L) stop("flank_kb must be a non-negative
 flank_label <- paste0("plus", flank_kb, "kb")
 
 pcs         <- paste0("PC", 1:14)
-bands       <- c(0.005, 0.01, 0.02)
-band_labels <- c("0.005" = "Top 0.5%", "0.01" = "Top 1%", "0.02" = "Top 2%")
+bands       <- c(0.02)   # only Top 2% is used by run-figureS20.R
+band_labels <- c("0.02" = "Top 2%")
 dist_modes  <- c("nearest_gene")
 p_cutoff    <- 0.05
 

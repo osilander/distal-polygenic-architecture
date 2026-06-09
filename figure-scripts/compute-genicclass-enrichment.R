@@ -1,8 +1,6 @@
 #!/usr/bin/env Rscript
 # Produces: results/genicclass_rank_enrichment_50k/
 #   cumulative_genicclass_enrichment_curves_pc1_pc4.tsv  (input for run-figure4.R)
-#   binned_genicclass_enrichment_curves_pc1_pc4_1pct_0to10.tsv
-#   ranked_windows_genicclass_pc1_pc4.tsv.gz
 # Pre-computed inputs: results/pca_loadings_50k.tsv,
 #                      data/gencode.v19.annotation.gtf.gz
 # Run: Rscript figure-scripts/compute-genicclass-enrichment.R
@@ -28,8 +26,6 @@ if (!file.exists(gtf_file)) stop("Missing GTF: ", gtf_file)
 
 out_dir     <- file.path("results", "genicclass_rank_enrichment_50k")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
-out_rank    <- file.path(out_dir, "ranked_windows_genicclass_pc1_pc4.tsv.gz")
-out_curve   <- file.path(out_dir, "binned_genicclass_enrichment_curves_pc1_pc4_1pct_0to10.tsv")
 out_cum     <- file.path(out_dir, "cumulative_genicclass_enrichment_curves_pc1_pc4.tsv")
 
 sample_chr_matched <- function(z_dt, chr_counts) {
@@ -179,8 +175,6 @@ for (pc in pcs) {
   }
 }
 
-fwrite(rbindlist(rank_rows,      use.names = TRUE, fill = TRUE), out_rank,  sep = "\t")
-fwrite(rbindlist(curve_rows,     use.names = TRUE, fill = TRUE), out_curve, sep = "\t")
-fwrite(rbindlist(curve_rows_cum, use.names = TRUE, fill = TRUE), out_cum,   sep = "\t")
+fwrite(rbindlist(curve_rows_cum, use.names = TRUE, fill = TRUE), out_cum, sep = "\t")
 message("Wrote: ", out_cum)
 message("Done.")

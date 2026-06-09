@@ -3,7 +3,7 @@
 #   for every window size found in data/windows_filtered/.
 #   (25k is also built here; run-pca-25k-min20-anchored.R separately builds the
 #    SNP-filtered 25k matrix all-trait-25k-mean-effects-snp20.tsv.)
-# Pre-computed inputs: data/windows_filtered/*_w*.summary.tsv (via data/ symlink)
+# Pre-computed inputs: data/windows_filtered/*_w*.summary.tsv
 # Run: Rscript figure-scripts/build-all-trait-matrices.R
 # Runtime: ~10-30 min depending on number of window sizes
 

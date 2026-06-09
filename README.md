@@ -1,7 +1,7 @@
 # distal-polygenic-architecture
 Post-processing pipeline for all figures in the distal polygenic architecture manuscript.
 Scripts are run from the project root (`distal-polygenic-architecture/`).
-> **Repo intent:** code release. `figures/`, `data/`, and `results/` are not tracked in git and will not exist on a fresh checkout — figure scripts create them on first run. Pre-computed HPC outputs and reference files are distributed via Zenodo (see below); `data/windows_filtered/` must be generated via HPC. A working copy may also contain local-only files (`*.tar.gz`, `*.pdf`, `*.txt`) that are gitignored and not part of the tracked repo surface.
+> **Repo intent:** code release. `figures/`, `data/`, and `results/` are not tracked in git and will not exist on a fresh checkout — figure scripts create them on first run. Pre-computed HPC outputs and reference files are distributed via Zenodo (see below); `data/windows_filtered/` can be populated either by extracting the Zenodo `windows_w*.tar.gz` archives or by running `slurms/build-windows.slurm` on HPC. Some expensive-but-reproducible intermediate results may also be staged in `data/` as a local cache — see `data/README.md` and Setup Step B below. A working copy may also contain local-only files (`*.tar.gz`, `*.pdf`, `*.txt`) that are gitignored and not part of the tracked repo surface.
 
 ---
 ## Quick build-status check
@@ -16,7 +16,7 @@ Verifies data symlink, HPC inputs, intermediate results, and reports what can an
 |------|----------------|-------------|
 | **Fully local** | All figure scripts (run-figure\*.R, run-figureS\*.R) and downstream summaries | Zenodo data downloaded and symlinked into `results/` (see Setup below) |
 | **Local if windows available** | Step 0 matrix build; FigureS1, FigureS8, FigureS11 | `data/windows_filtered/` (generate via `slurms/build-windows.slurm`) |
-| **Fully local (via Zenodo)** | Figure 1 scree panel | `chunk_withinperm_scree_runs_50k.tsv.gz` included in Zenodo deposit; symlinked in Setup Step B |
+| **Fully local (via Zenodo)** | Figure 1 scree panel | `chunk_withinperm_scree_runs_50k.tsv.gz` included in Zenodo deposit; copied into results/ in Setup Step B |
 
 ---
 ## Directory structure
@@ -40,7 +40,7 @@ distal-polygenic-architecture/
   slurms/                            → HPC SLURM scripts
     build-windows.slurm                Array job: per-trait window summaries → data/windows_filtered/
     chunk-withinperm-prepare.slurm     Step 1: prepare chunk within-perm base RDS on HPC
-    chunk-withinperm-run.slurm         Step 2: array job workers → results/chunk-withinperm-nulls-50k/
+    chunk-withinperm-run.slurm         Step 2: array job workers → results/chunk-withinperm-nulls-50k/hpc_runs/window_vectors/
   README.md
   data/README.md                     → Zenodo deposit description
 ```
@@ -48,41 +48,57 @@ distal-polygenic-architecture/
 ---
 ## Setup — populating data/ and results/
 
-### Step A — Download from Zenodo
-All Zenodo files are uploaded individually. Download them into `data/` and extract the archives:
+### Step A — Download and extract from Zenodo
+Download all files into `data/` and extract the archives:
 ```bash
 cd data/
-tar -xzf svd-nulls-50k.tar.gz              # → data/svd-nulls-50k/{entry_flip,withinblock_perm,observed}/
-tar -xzf allbyall_cosine_matrices.tar.gz   # → data/allbyall_cosine_matrices/
-# chunk_withinperm_base_50k.rds and reference files (gencode.*, pickrell_blocks.bed,
-# trait_abbrevs_categorised.txt) are direct files — no extraction needed
-# window summaries (optional; only needed for Step 0 and FigureS1/S8/S11):
+tar -xzf svd-nulls-50k.tar.gz
+tar -xzf allbyall_cosine_matrices.tar.gz
+# window summaries (only needed for Step 0 and FigureS1/S8/S11):
 mkdir -p windows_filtered
 tar -xzf windows_w50000.tar.gz -C windows_filtered/   # repeat for each size needed
+# cached intermediates — extract any you want to use instead of recomputing:
+tar -xzf svd_robustness.tar.gz
+tar -xzf pca_multiscale_anchored.tar.gz
+tar -xzf gwas_removed_distance_topload_50k_plus100kb.tar.gz
+tar -xzf gwas_removed_distance_topload_50k_plus150kb.tar.gz
+tar -xzf withinperm_peaks.tar.gz
+tar -xzf full_enrichment.tar.gz
+tar -xzf gwas_removed_enrichment.tar.gz
 cd ..
 ```
 
-### Step B — Symlink data/ into results/
-Scripts expect HPC null outputs under `results/svd-nulls-50k/`, `results/allbyall_cosine_matrices/`,
-and `results/chunk-withinperm-nulls-50k/hpc_base/`:
+### Step B — Populate results/
+Symlink the Zenodo null payloads and copy any cached intermediates you extracted:
 ```bash
 mkdir -p results/svd-nulls-50k results/chunk-withinperm-nulls-50k/hpc_base
 
-ln -s ../../data/svd-nulls-50k/entry_flip                          results/svd-nulls-50k/entry_flip
-ln -s ../../data/svd-nulls-50k/withinblock_perm                    results/svd-nulls-50k/withinblock_perm
-ln -s ../../data/svd-nulls-50k/observed                            results/svd-nulls-50k/observed
-ln -s ../data/allbyall_cosine_matrices                             results/allbyall_cosine_matrices
-ln -s ../../../data/chunk_withinperm_base_50k.rds                  results/chunk-withinperm-nulls-50k/hpc_base/chunk_withinperm_base_50k.rds
-cp data/chunk_withinperm_scree_runs_50k.tsv.gz                     results/chunk-withinperm-nulls-50k/
-```
+ln -s ../../data/svd-nulls-50k/entry_flip       results/svd-nulls-50k/entry_flip
+ln -s ../../data/svd-nulls-50k/withinblock_perm results/svd-nulls-50k/withinblock_perm
+ln -s ../../data/svd-nulls-50k/observed         results/svd-nulls-50k/observed
+ln -s ../data/allbyall_cosine_matrices          results/allbyall_cosine_matrices
+ln -s ../../../data/chunk_withinperm_base_50k.rds \
+      results/chunk-withinperm-nulls-50k/hpc_base/chunk_withinperm_base_50k.rds
+cp data/chunk_withinperm_scree_runs_50k.tsv.gz  results/chunk-withinperm-nulls-50k/
 
-### Step C — HPC-only inputs (not on Zenodo)
-Two items are not in the Zenodo deposit and must be generated via HPC:
+# cached intermediates (skip any you prefer to recompute):
+cp -r data/svd_robustness                              results/
+cp -r data/pca_multiscale_anchored                     results/
+cp -r data/gwas_removed_distance_topload_50k_plus100kb results/
+cp -r data/gwas_removed_distance_topload_50k_plus150kb results/
+cp    data/withinperm_peaks_*.tsv                      results/
+cp    data/gwasremoved_withinperm_peaks_*.tsv          results/
+cp -r data/full_enrichment                             results/
+cp -r data/gwas_removed_enrichment                     results/
+```
+See `data/README.md` for the full list of cached intermediates and how to regenerate each.
+
+### Step C — Window summaries (not on Zenodo as pre-built files)
+One item is not in the Zenodo deposit. It was generated via HPC for this project, but can also be produced locally given sufficient compute and patience:
 
 | What | How | Needed for |
 |------|-----|-----------|
-| `data/windows_filtered/` | `slurms/build-windows.slurm` (array job over all traits); or extract Zenodo `windows_w*.tar.gz` per window size needed | Step 0 matrix build, FigureS1/S8/S11 |
-| `results/chunk-withinperm-nulls-50k/chunk_withinperm_scree_runs_50k.tsv.gz` | Included in Zenodo deposit (`data/`); symlinked in Setup Step B | Figure 1 scree panel |
+| `data/windows_filtered/` | Extract Zenodo `windows_w*.tar.gz` per window size needed, or generate via `slurms/build-windows.slurm`; a local symlink to another repo's copy also works but is not portable | Step 0 matrix build, FigureS1/S8/S11 |
 
 ---
 ## Full build order
@@ -91,7 +107,7 @@ Scripts must be run from the **project root** (`distal-polygenic-architecture/`)
 ```r
 Rscript figure-scripts/build-all-trait-matrices.R
 ```
-Reads `data/windows_filtered/*_w*.summary.tsv` (via `data/` symlink) and writes
+Reads `data/windows_filtered/*_w*.summary.tsv` and writes
 `results/all-trait-{25k,50k,100k,200k,500k,1m,...}-mean-{effects,pvals,rand-mean-effects}.tsv`
 for every window size present.
 
@@ -128,7 +144,7 @@ The SVD null outputs (`results/svd-nulls-50k/`) are provided via Zenodo (`svd-nu
 and symlinked into `results/` in Setup Step B above — no action needed.
 
 The chunk within-permutation scree file (`chunk_withinperm_scree_runs_50k.tsv.gz`) is
-included in this Zenodo deposit (`data/`) and symlinked into `results/` by the command
+included in this Zenodo deposit (`data/`) and copied into `results/` by the command
 above. No additional steps are needed.
 
 If the file needs to be regenerated from raw data (this takes several hours):
@@ -172,7 +188,7 @@ Rscript figure-scripts/run-figureS1.R
 ```
 **Outputs:** `figures/figureS1_window_snp_count_histograms_50k.pdf`,
 `results/window_snp_count_histograms_50k.tsv`
-**Requires:** `data/windows_filtered/*_w50000.summary.tsv` (via symlink).
+**Requires:** `data/windows_filtered/*_w50000.summary.tsv`.
 
 ---
 ### FigureS2 — SVD robustness checks
@@ -232,7 +248,7 @@ Rscript figure-scripts/run-figureS8.R
 ```
 **Outputs:** `figures/figureS8_pca_abs50k_from_windows.pdf`,
 `results/pca_abs50k_from_windows/{trait_scores,window_loadings,singular_values,scree_fullspectrum,window_coordinates,heatmap_matrix_top60}.tsv`
-**Requires:** `data/windows_filtered/*_w50000.summary.tsv` (via symlink).
+**Requires:** `data/windows_filtered/*_w50000.summary.tsv`.
 
 ---
 ### FigureS9 — Absolute-value PCA from mean effects
@@ -240,16 +256,18 @@ Rscript figure-scripts/run-figureS8.R
 Rscript figure-scripts/run-figureS9.R
 ```
 **Outputs:** `figures/figureS9_pca_absolute_50k.pdf`,
-`results/figureS_pca_absolute_50k_{trait_scores,scree,window_loadings_top200,heatmap_matrix_top60}.tsv`
+`results/figureS_pca_absolute_50k_{trait_scores,scree}.tsv`
 **Requires:** Step 0 complete.
 
 ---
 ### FigureS10 — Within/over/between cosine coherence
 ```r
+Rscript figure-scripts/compute-mean-effect-pca.R
 Rscript figure-scripts/run-figureS10.R
 ```
 **Outputs:** `figures/figureS10_within_over_between_abs_cosine_k4_k8_normalized_expanded.pdf`
-**Requires:** FigureS9 complete, FigureS11 complete, Step 2 complete.
+**Intermediates:** `results/pca_mean_effect/trait_scores_{50k,100k}_mean.tsv`
+**Requires:** FigureS9 complete, FigureS11 complete, Step 2 complete, `compute-mean-effect-pca.R` complete.
 
 ---
 ### FigureS11 — Multiscale PCA scatter + cosine/Procrustes heatmaps
@@ -338,11 +356,12 @@ Rscript figure-scripts/run-figureS19.R
 ---
 ### FigureS20 — GWAS-removed GO enrichment dotplot
 ```r
-Rscript figure-scripts/run-figureS20.R [flank_kb]
+Rscript figure-scripts/compute-gwas-removed-gene-enrichment.R 100
+Rscript figure-scripts/run-figureS20.R 100
 ```
-**Outputs:** `figures/figureS20_gwasremoved_enrichment_dotplot_nearest_gene_plus{flank_kb}kb_top2pct.pdf`
-**Requires:** `results/gwas_removed_enrichment/enrichment_results_plus{flank_kb}kb.tsv` (from `compute-gwas-removed-gene-enrichment.R`); `GOSemSim`, `org.Hs.eg.db`.
-**Note:** GO terms are redundancy-filtered using Wang semantic similarity (cutoff 0.7) via GOSemSim before plotting. Top 2% band, GO:BP/MF and GO:CC panels, intersection size ≥ 15.
+**Outputs:** `figures/figureS20_gwasremoved_enrichment_dotplot_nearest_gene_plus100kb_top2pct.pdf`
+**Requires:** `results/gwas_removed_enrichment/enrichment_results_plus100kb.tsv` (from `compute-gwas-removed-gene-enrichment.R 100`); `GOSemSim`, `org.Hs.eg.db`.
+**Note:** Only the 100 kb flank is used. GO terms are redundancy-filtered using Wang semantic similarity (cutoff 0.7) via GOSemSim before plotting. Top 2% band, GO:BP/MF and GO:CC panels, intersection size ≥ 15.
 
 ---
 ### FigureS21 — GWAS-removed within-permutation loading concentration

@@ -211,8 +211,8 @@ panel_n <- function(p) {
 }
 
 # ---- Dot plots: GO:BP/MF panel (A) and GO:CC panel (B), simplified terms only ----
-bands_show <- c("Top 2%")
-band_slug  <- c("Top 1%" = "top1pct", "Top 2%" = "top2pct")
+bands_show <- c("Top 2%")   # only band produced by compute-gwas-removed-gene-enrichment.R
+band_slug  <- c("Top 2%" = "top2pct")
 
 for (band_show in bands_show) {
   dt_s <- dt_simp[band == band_show]

@@ -2,12 +2,8 @@
 # Produces: results/observed-nearest-patterns-{window_tag}-top1_2_5_band45_50/
 #   observed_nearestgene_bin_enrichment_{window_tag}_top1_2_5_band45_50.tsv
 #   observed_nearestgene_bandsummary_{window_tag}_top1_2_5_band45_50.tsv
-#   observed_nearestgene_null_replicates_{window_tag}_top1_2_5_band45_50.tsv.gz
-#   observed_nearestgene_ranked_windows_{window_tag}.tsv.gz
 #   observed_nearestgwaspeak_bin_enrichment_{window_tag}_top1_2_5_band45_50.tsv
 #   observed_nearestgwaspeak_bandsummary_{window_tag}_top1_2_5_band45_50.tsv
-#   observed_nearestgwaspeak_null_replicates_{window_tag}_top1_2_5_band45_50.tsv.gz
-#   observed_nearestgwaspeak_ranked_windows_{window_tag}.tsv.gz
 # Pre-computed inputs:
 #   50k: results/pca_loadings_50k.tsv (from run-figure1.R), results/all-trait-50k-mean-pvals.tsv †
 #   100k: results/pca_multiscale_anchored/pca_windows_100k_anchored.tsv †,
@@ -71,19 +67,10 @@ dir.create("figures", recursive = TRUE, showWarnings = FALSE)
 
 out_gene_z      <- file.path(out_dir, sprintf("observed_nearestgene_bandsummary_%s_top1_2_5_band45_50.tsv", file_tag))
 out_gene_bins   <- file.path(out_dir, sprintf("observed_nearestgene_bin_enrichment_%s_top1_2_5_band45_50.tsv", file_tag))
-out_gene_rep    <- file.path(out_dir, sprintf("observed_nearestgene_null_replicates_%s_top1_2_5_band45_50.tsv.gz", file_tag))
-out_gene_ranked <- file.path(out_dir, sprintf("observed_nearestgene_ranked_windows_%s.tsv.gz", file_tag))
 out_gws_z      <- file.path(out_dir, sprintf("observed_nearestgwaspeak_bandsummary_%s_top1_2_5_band45_50.tsv", file_tag))
 out_gws_bins   <- file.path(out_dir, sprintf("observed_nearestgwaspeak_bin_enrichment_%s_top1_2_5_band45_50.tsv", file_tag))
-out_gws_rep    <- file.path(out_dir, sprintf("observed_nearestgwaspeak_null_replicates_%s_top1_2_5_band45_50.tsv.gz", file_tag))
-out_gws_ranked <- file.path(out_dir, sprintf("observed_nearestgwaspeak_ranked_windows_%s.tsv.gz", file_tag))
-out_progress   <- file.path(out_dir, sprintf("progress_%s_top1_2_5_band45_50.log", file_tag))
-
 log_progress <- function(...) {
-  msg <- paste0(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), " ", paste0(..., collapse = ""))
-  message(msg)
-  cat(msg, "\n", file = out_progress, append = TRUE)
-  flush.console()
+  message(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), " ", paste0(..., collapse = ""))
 }
 
 get_nearest_gene_distances <- function(win_dt) {
@@ -385,29 +372,19 @@ ld[, chrom_ord := NULL]
 if (analysis_kind %in% c("both", "gene_only")) {
   log_progress("Observed analysis (nearest gene, ", window_tag, ")...")
   dist_gene <- get_nearest_gene_distances(ld[, .(window_id, chrom, start, end)])
-  ranked_gene <- build_ranked_windows(ld, dist_gene)
-  fwrite(ranked_gene, out_gene_ranked, sep = "\t")
-  log_progress("Wrote ", out_gene_ranked)
   res_gene <- run_pattern(ld, dist_gene)
   fwrite(res_gene$z, out_gene_z, sep = "\t")
   fwrite(res_gene$bins, out_gene_bins, sep = "\t")
-  fwrite(res_gene$reps, out_gene_rep, sep = "\t")
   log_progress("Wrote ", out_gene_z)
   log_progress("Wrote ", out_gene_bins)
-  log_progress("Wrote ", out_gene_rep)
 }
 
 if (analysis_kind %in% c("both", "gwas_only")) {
   log_progress("Observed analysis (nearest GWAS-significant window, ", window_tag, ")...")
   dist_gws <- get_nearest_gwaspeak_distances(ld[, .(window_id, chrom, start, end)])
-  ranked_gws <- build_ranked_windows(ld, dist_gws)
-  fwrite(ranked_gws, out_gws_ranked, sep = "\t")
-  log_progress("Wrote ", out_gws_ranked)
   res_gws <- run_pattern(ld, dist_gws)
   fwrite(res_gws$z, out_gws_z, sep = "\t")
   fwrite(res_gws$bins, out_gws_bins, sep = "\t")
-  fwrite(res_gws$reps, out_gws_rep, sep = "\t")
   log_progress("Wrote ", out_gws_z)
   log_progress("Wrote ", out_gws_bins)
-  log_progress("Wrote ", out_gws_rep)
 }

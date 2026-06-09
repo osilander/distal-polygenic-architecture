@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 # Produces: figures/figureS9_pca_absolute_50k.pdf,
-#           results/figureS_pca_absolute_50k_{trait_scores,scree,window_loadings_top200,
-#                                             heatmap_matrix_top60}.tsv
+#           results/figureS_pca_absolute_50k_{trait_scores,scree}.tsv
 # Pre-computed inputs: results/all-trait-50k-mean-{effects,pvals}.tsv,
 #                      data/trait_abbrevs_categorised.txt
 # Run: Rscript figure-scripts/run-figureS9.R
@@ -26,8 +25,6 @@ setwd(project_root)
 out_fig    <- file.path("figures", "figureS9_pca_absolute_50k.pdf")
 out_scores <- file.path("results", "figureS_pca_absolute_50k_trait_scores.tsv")
 out_scree  <- file.path("results", "figureS_pca_absolute_50k_scree.tsv")
-out_win    <- file.path("results", "figureS_pca_absolute_50k_window_loadings_top200.tsv")
-out_heat   <- file.path("results", "figureS_pca_absolute_50k_heatmap_matrix_top60.tsv")
 dir.create("figures", recursive = TRUE, showWarnings = FALSE)
 dir.create("results", recursive = TRUE, showWarnings = FALSE)
 
@@ -134,7 +131,6 @@ pca_plot_data[, total_abs := rowSums(abs(.SD)), .SDcols = pc_cols]
 top_traits <- head(pca_plot_data[order(-pca_plot_data$total_abs), "trait"], 60)$trait
 sub   <- subset(pca_plot_data, trait %in% top_traits); sub <- sub[match(top_traits, sub$trait), ]
 mat   <- as.matrix(sub[, ..pc_cols]); rownames(mat) <- sub$trait
-fwrite(as.data.table(mat, keep.rownames = "trait"), out_heat, sep = "\t")
 
 col_fun       <- colorRamp2(seq(corr.lims[1], corr.lims[2], length.out = 100), color_palette)
 row_hclust    <- hclust(dist(mat), method = "ward.D2")
@@ -183,8 +179,5 @@ trait_scores <- merge(trait_scores, trait_cat_subset, by = "trait_abbrev", all.x
 fwrite(trait_scores, out_scores, sep = "\t")
 scree_df <- data.frame(PC = paste0("PC", seq_along(pve)), VarianceExplained = pve * 100, PC_num = seq_along(pve))
 fwrite(as.data.table(scree_df), out_scree, sep = "\t")
-fwrite(as.data.table(pca_abs$rotation)[, .(
-  region_label = rownames(pca_abs$rotation), PC1, PC2, PC3, PC4
-)][, abs_PC1 := abs(PC1)][order(-abs_PC1)][1:min(200L, .N)], out_win, sep = "\t")
 
 message("FigureS9 complete: ", out_fig)

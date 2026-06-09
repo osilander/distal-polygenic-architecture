@@ -22,8 +22,8 @@ project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
 setwd(project_root)
 
 pcs         <- paste0("PC", 1:14)
-bands       <- c(0.005, 0.01, 0.02)
-band_labels <- c("0.005" = "Top 0.5%", "0.01" = "Top 1%", "0.02" = "Top 2%")
+bands       <- c(0.02)   # only Top 2% is used by run-figureS7.R
+band_labels <- c("0.02" = "Top 2%")
 dist_modes  <- c("nearest_gene")
 p_cutoff    <- 0.05
 
